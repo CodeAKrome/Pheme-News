@@ -1,8 +1,10 @@
-check:
-	echo "foo"
+cycle:
+	cat config/oneshot_rss.tsv | src src/read_rss.py
 harvest:
 	scripts/harvest.sh
-make format:
-	black python/*.py python/lib/*.py
-make dev:
+format:
+	black src/*.py src/lib/*.py
+dev: install
 	pip install -r requirements-dev.txt
+install:
+	pip install -r requirements.txt

@@ -8,7 +8,7 @@ import fileinput
 
 
 def truncurl(string: str) -> str:
-    """Get rid of trailing stuff from article urls like promo and source_id tracking E.g. ?src=rss&campaign=foo"""
+    """Get rid of trailing stuff from article urls like promo and source tracking E.g. ?src=rss&campaign=foo"""
     if "#" in string:
         index = string.index("#")
         return string[:index]
@@ -27,7 +27,7 @@ def feedrec(feed):
     else:
         rec = {
             "type": "rss",
-            "source_id": "",
+            "source": "",
             "title": "",
             "description": "",
             "url": "",
@@ -47,7 +47,7 @@ def artrec(feed):
         else:
             rec = {
                 "type": "art",
-                "source_id": feed["source_id"],
+                "source": feed["source"],
                 "title": art["title"],
                 "summary": "",
                 "link": truncurl(art["link"]),
@@ -62,35 +62,35 @@ def artrec(feed):
 
 
 @arrest([ValueError], "Couldn't get feed.")
-def proc(source_id: str, url: str):
+def proc(source: str, url: str):
     """Main processing"""
     feed = rss_feed(url)
-    feed["source_id"] = source_id
+    feed["source"] = source
     feedrec(feed)
     artrec(feed)
 
 
 @arrest([TypeError, ValueError], "Invalid feed entry in input.")
 def valid(line):
-    """Feed url line input validation. Line is tab delim <source_id>\t<RSS url>"""
-    source_id, url = line.split()
-    source_id = str(source_id)
-    if type(source_id) is not str:
-        raise TypeError(f"Feed id type: {type(source_id)} must be string.")
+    """Feed url line input validation. Line is tab delim <source>\t<RSS url>"""
+    source, url = line.split()
+    source = str(source)
+    if type(source) is not str:
+        raise TypeError(f"Feed id type: {type(source)} must be string.")
     if "http" != url[:4]:
         raise ValueError(f"Feed URL: {url} must be of form http.")
-    return source_id, url
+    return source, url
 
 
 @arrest([TypeError], "I love trash -- Oscar T. Grouch.")
 def read():
-    """Read lines from stdin. Should be source_id and url on lines."""
+    """Read lines from stdin. Should be source and url on lines."""
     ln = 0
     for line in fileinput.input():
         try:
             ln += 1
-            source_id, url = valid(line.strip())
-            proc(source_id, url)
+            source, url = valid(line.strip())
+            proc(source, url)
         except Exception as e:
             log_error(f"stdin line: {ln} type: {type(e)} val: {e}\n[{line}]")
 
