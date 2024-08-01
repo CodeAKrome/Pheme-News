@@ -51,7 +51,7 @@ def rss_feed(url, timeout=DEFAULT_TIMEOUT):
         if "tags" in entry:
             item["tags"] = entry["tags"]
         if "summary" in entry:
-            item["summary"] = (html2txt(entry.summary))
+            item["summary"] = html2txt(entry.summary)
         # Fold fields updated and updated_parsed onto published and published_parsed
         if "published" not in entry and "updated" in entry:
             entry["published"] = entry["updated"]

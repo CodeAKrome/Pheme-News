@@ -25,7 +25,13 @@ def feedrec(feed):
     if "url" not in feed or feed["url"] == "":
         raise ValueError(f"Feed URL missing or empty.\n{feed}")
     else:
-        rec = {"type": "rss", "source_id": "", "title": "", "description": "", "url": ""}
+        rec = {
+            "type": "rss",
+            "source_id": "",
+            "title": "",
+            "description": "",
+            "url": "",
+        }
         for k in rec.keys():
             if k in feed:
                 rec[k] = feed[k]
