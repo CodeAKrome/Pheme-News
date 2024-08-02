@@ -1,5 +1,5 @@
 cycle:
-	cat config/oneshot_rss.tsv | src src/read_rss.py
+	cat config/oneshot_rss.tsv | python src/read_rss.py
 harvest:
 	scripts/harvest.sh
 format:
