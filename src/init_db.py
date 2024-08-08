@@ -1,10 +1,13 @@
 import mysql.connector
 from mysql.connector import Error
 import os
+from lib.TiDB import TiDB
+
 
 def read_sql_file(file_path):
-    with open(file_path, 'r') as file:
+    with open(file_path, "r") as file:
         return file.read()
+
 
 def create_database(cursor, db_name):
     try:
@@ -13,19 +16,29 @@ def create_database(cursor, db_name):
     except Error as e:
         print(f"Error creating database: {e}")
 
+
 def create_tables(cursor, sql_statements):
     try:
-        for statement in sql_statements.split(';'):
+        for statement in sql_statements.split(";"):
             if statement.strip():
                 cursor.execute(statement)
         print("Tables created successfully.")
     except Error as e:
         print(f"Error creating tables: {e}")
 
+
+def drop_database(cursor, db_name):
+    try:
+        cursor.execute(f"DROP DATABASE IF EXISTS {db_name}")
+        print(f"Database '{db_name}' dropped if it existed.")
+    except Error as e:
+        print(f"Error dropping database: {e}")
+
+
 def main():
     db_name = "test"
-    schema_file = "createdb.sql"
-    
+    schema_file = "../config/init_db.sql"
+
     # Check if the schema file exists
     if not os.path.exists(schema_file):
         print(f"Error: Schema file '{schema_file}' not found.")
@@ -33,36 +46,34 @@ def main():
 
     # Read the SQL schema from file
     sql_statements = read_sql_file(schema_file)
+    db = TiDB()
+    connection = db.get_connection()
 
     try:
-        connection = mysql.connector.connect(
-            host="localhost",
-            user="your_username",
-            password="your_password"
-        )
-        
+        # connection = mysql.connector.connect(
+        #     host="localhost",
+        #     user="your_username",
+        #     password="your_password"
+        # )
+
         if connection.is_connected():
             cursor = connection.cursor()
-            
+            drop_database(cursor, db_name)
             # Create the database
             create_database(cursor, db_name)
-            
             # Switch to the new database
             cursor.execute(f"USE {db_name}")
-            
             # Create tables
             create_tables(cursor, sql_statements)
-            
             # Commit changes
             connection.commit()
-            
             # Verify table creation
             cursor.execute("SHOW TABLES")
             tables = cursor.fetchall()
             print("Tables in the database:")
             for table in tables:
                 print(table[0])
-                
+
     except Error as e:
         print(f"Error: {e}")
     finally:
@@ -70,6 +81,7 @@ def main():
             cursor.close()
             connection.close()
             print("MySQL connection is closed")
+
 
 if __name__ == "__main__":
     main()

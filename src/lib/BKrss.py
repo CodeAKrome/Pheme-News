@@ -3,7 +3,8 @@ import fileinput
 
 import sys
 import os
-sys.path.append(os.path.abspath('../Decor'))
+
+sys.path.append(os.path.abspath("../Decor"))
 from Decor import Decor
 
 import feedparser
@@ -17,6 +18,7 @@ import html
 import re
 
 DEFAULT_TIMEOUT = 30
+
 
 class Rss:
     def __init__(self):
@@ -105,11 +107,13 @@ class Rss:
             except Exception as e:
                 log_error(f"stdin line: {ln} type: {type(e)} val: {e}\n[{line}]")
 
-#----
+    # ----
 
     def rss_feeds(self, urls, timeout=DEFAULT_TIMEOUT):
         with ThreadPoolExecutor() as executor:
-            future_to_url = {executor.submit(rss_feed, url, timeout): url for url in urls}
+            future_to_url = {
+                executor.submit(rss_feed, url, timeout): url for url in urls
+            }
             results = []
             errors = []
             for future in as_completed(future_to_url):
@@ -120,7 +124,6 @@ class Rss:
                 except Exception as e:
                     errors.append((url, e))
         return (results, errors)
-
 
     def rss_feed(self, url, timeout=DEFAULT_TIMEOUT):
         try:
@@ -162,7 +165,6 @@ class Rss:
             "items": items,
         }
 
-
     def pp_rss(self, results, errors):
         print("Results:")
         for result in results:
@@ -178,8 +180,7 @@ class Rss:
         for url, error in errors:
             print(f"Error processing feed {url}: {error}")
 
-
-#---
+    # ---
 
     def html2txt(self, htmlstr: str) -> str:
         """Convert HTML to plain text"""
@@ -188,7 +189,9 @@ class Rss:
         # Remove remaining HTML markup
         utf8_string = re.sub("\n", "", utf8_string)
         return re.sub("<[^<]+?>", "", utf8_string)
-#--->>
+
+
+# --->>
 
 if __name__ == "__main__":
     processor = Rss()
