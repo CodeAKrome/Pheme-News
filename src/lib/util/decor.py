@@ -1,6 +1,7 @@
 from functools import wraps
 import traceback
-from . import log
+from .log import logger as logger
+
 
 def arrest(exceptions, message=None):
     def decorator(func):
@@ -11,8 +12,10 @@ def arrest(exceptions, message=None):
             except tuple(exceptions) as e:
                 print(f"Error: {e}")
                 print("Traceback:")
-                traceback.print_exc()
+                logger.error(traceback.format_exc())
                 if message:
-                    log.logger.error(message)
+                    logger.error(message)
+
         return wrapper
+
     return decorator
