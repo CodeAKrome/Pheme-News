@@ -1,3 +1,6 @@
+rss.jsonl
+.autoenv.leave
+.autoenv
 .DS_Store
 .env.leave
 # Byte-compiled / optimized / DLL files

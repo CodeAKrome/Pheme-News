@@ -11,9 +11,10 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import urllib.error
 import socket
 
-VALID_RECORD = re.compile(r"^[a-zA-Z][a-zA-Z0-9\-]*\s+http:\/\/[^\t]*\.[a-zA-Z]*$")
+VALID_RECORD = re.compile(r"^[a-zA-Z][a-zA-Z0-9\-]*[\s\t]+https?:\/\/[^\t]*$")
 FORMAT_ERROR = "Invalid input format. Should be 2 tab delimited columns: feed name (starting with a letter, then alphanumerics) and feed URL."
 DEFAULT_TIMEOUT = 30
+USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
 
 
 @dataclass(slots=True)
@@ -30,11 +31,10 @@ class FeedSource:
 class FeedRecord:
     source: str
     link: str
-    image: str
-    language: str
     title: str
     subtitle: str
     flavor: str = "rss"
+    language: str = ""
 
     def __str__(self) -> str:
         return json.dumps(asdict(self))
@@ -44,12 +44,14 @@ class FeedRecord:
 class Article:
     source: str
     title: str
-    summary: str
     link: str
-    published: str
-    published_parsed: str
     tags: list[str] = field(default_factory=list)
     flavor: str = "art"
+    published: str = ""
+    published_parsed: str = ""
+    summary: str = ""
+    media_content: [dict] = field(default_factory=list)
+    media_thumbnail: [dict] = field(default_factory=list)   
 
     def __str__(self) -> str:
         return json.dumps(asdict(self))
@@ -90,9 +92,13 @@ class ReadRss(BaseException):
         utf8_string = re.sub("\n", "", utf8_string)
         return re.sub("<[^<]+?>", "", utf8_string)
 
+    @arrest([ValueError], "Couldn't read RSS feed, maybe 403 forbidden.")
     def read_rss(self, feed_rec: Feed, timeout=DEFAULT_TIMEOUT) -> FeedRecord:
         try:
-            with urllib.request.urlopen(feed_rec.url, timeout=timeout) as response:
+            req = urllib.request.Request(
+                feed_rec.url, headers={"User-Agent": USER_AGENT}
+            )
+            with urllib.request.urlopen(req, timeout=timeout) as response:
                 data = response.read()
                 records = feedparser.parse(data)
                 # ic(records)
@@ -101,30 +107,38 @@ class ReadRss(BaseException):
                     link=feed_rec.url,
                     title=records.feed.title,
                     subtitle=records.feed.subtitle,
-                    language=records.feed.language,
-                    image=records.feed.image['href'] if 'image' in records.feed else None,
                 )
+                    
+                if "language" in records.feed:
+                    rec.language = records.feed.language
                 print(rec)
                 # print(dir(records))
                 if records and len(records.entries) > 0:
                     for entry in records.entries:
+                        # ic(entry)
                         article = Article(
-                            source=records.feed.title,
+                            source=feed_rec.source,
                             title=entry.title,
-                            summary=entry.summary,
                             link=entry.link,
-                            published=entry.published,
-                            published_parsed=str(entry.published_parsed),
                         )
-                        
-                        if 'summary' in entry:
+
+                        # Main image entry. Detect other type of media.
+                        if "media_content" in entry:
+                            article.media_content = entry.media_content
+                        if "media_thumbnail" in entry:
+                            article.media_thumbnail = entry.media_thumbnail
+
+                        if "summary" in entry:
                             article.summary = self.html2txt(entry.summary)
-                        if 'tags' in entry:
-                            article.tags = entry.tags
+                        if "tags" in entry:
+                            article.tags = [tag.term for tag in entry.tags]
                         # Fold fields updated and updated_parsed onto published and published_parsed
                         if "published" not in entry and "updated" in entry:
                             article.published = entry["updated"]
-                        if "published_parsed" not in entry and "updated_parsed" in entry:
+                        if (
+                            "published_parsed" not in entry
+                            and "updated_parsed" in entry
+                        ):
                             article.published_parsed = entry["updated_parsed"]
                         if "published" in entry:
                             article.published = entry.published
@@ -133,12 +147,16 @@ class ReadRss(BaseException):
                         print(article)
 
         except (urllib.error.HTTPError, urllib.error.URLError, socket.timeout) as e:
-            raise ValueError(f"Error fetching RSS feed from {url} {e}")
+            raise ValueError(f"Error fetching RSS feed from {feed_rec.url} {e}")
 
     def read(self):
         for i, line in enumerate(sys.stdin, start=1):
-            feed_rec = self.validate_feed(line.strip())
-            print(f"{i}: {feed_rec}")
+            line = line.strip()
+            # Allow for comments if # is first character
+            if line[0] == "#" or line.strip() == "":
+                continue
+            feed_rec = self.validate_feed(line)
+            # print(f"{i}: {feed_rec}")
             feed = self.read_rss(feed_rec)
 
     # def (self, feed_record: Feed) -> Feed:
