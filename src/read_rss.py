@@ -51,7 +51,7 @@ class Article:
     published_parsed: str = ""
     summary: str = ""
     media_content: [dict] = field(default_factory=list)
-    media_thumbnail: [dict] = field(default_factory=list)   
+    media_thumbnail: [dict] = field(default_factory=list)
 
     def __str__(self) -> str:
         return json.dumps(asdict(self))
@@ -108,7 +108,7 @@ class ReadRss(BaseException):
                     title=records.feed.title,
                     subtitle=records.feed.subtitle,
                 )
-                    
+
                 if "language" in records.feed:
                     rec.language = records.feed.language
                 print(rec)

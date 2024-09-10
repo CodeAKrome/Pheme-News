@@ -1,7 +1,23 @@
+neo4j:
+	docker run --restart always --publish=7474:7474 --publish=7687:7687 --env NEO4J_AUTH=neo4j/badpassword --volume=/Users/kyle/hub/Pheme-News/neo4j:/data neo4j:latest
+testload:
+	cypher-shell -u kyle -p $NEO4J_PASS -f testrun4.cypher -d neo4j
+analize:
+	head run3.jsonl | src/analize.py > analize.txt
 cycle:
 	cat config/oneshot_rss.tsv | python src/read_rss.py
-run:
-	cat config/sample_rss_feeds.tsv | python src/read_rss.py
+run1:
+	cat config/sample_rss_feeds.tsv | python src/read_rss.py > run1.jsonl
+run2:
+	cat run1.jsonl | python src/read_article.py > run2.jsonl
+run3:
+	cat run2.jsonl | grep '"art"' > run3.jsonl
+run4:
+	cat run3.jsonl | python src/sentiment.py | grep CREATE > run4.cypher
+testrun4:
+	head run3.jsonl | python src/sentiment.py | grep CREATE > testrun4.cypher
+testrun:
+	head -n 1 batch-0.tsv | python src/read_rss.py | python src/read_article.py | grep '"art"' | tee testrun.jsonl | python src/sentiment.py | grep CREATE > testrun.cypher
 media_thumbnail:
 	cat config/sample_rss_feeds.tsv| grep bbc-eng | python src/read_rss.py
 media_content:

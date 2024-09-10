@@ -1,4 +1,5 @@
-rss.jsonl
+*.jsonl
+*.cypher
 .autoenv.leave
 .autoenv
 .DS_Store
