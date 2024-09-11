@@ -40,6 +40,19 @@ make sampleload
 
 # Some things I've run
 
+## This query will return the top 10 nodes with the highest bias, along with information about their LOVES and HATES relationships.
+
+```cypher
+MATCH (n)-[r:BIAS]->(m)
+OPTIONAL MATCH (n)-[loves:LOVES]->(lovedNode)
+OPTIONAL MATCH (n)-[hates:HATES]->(hatedNode)
+RETURN n, r.bias AS biasScore, 
+       collect(DISTINCT {type: 'LOVES', target: lovedNode}) AS lovesRelationships,
+       collect(DISTINCT {type: 'HATES', target: hatedNode}) AS hatesRelationships
+ORDER BY r.bias DESC
+LIMIT 10
+```
+
 ## Top 10 connected
 ```cypher
 MATCH (n)
