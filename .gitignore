@@ -1,3 +1,4 @@
+.vscode
 *.jsonl
 *.cypher
 .autoenv.leave

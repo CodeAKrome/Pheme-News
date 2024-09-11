@@ -47,6 +47,9 @@ def main():
     for bias in ["positive", "negative", "neutral"]:
         print(f"CREATE ({bias}:Bias)")
 
+    dedupe = {}
+    dedupe_init = True
+
     for line in sys.stdin:
         record = line.strip()
         if record:
@@ -83,12 +86,24 @@ def main():
                 "neutral": 0,
             }
 
+            dupe_count = 0
             for sentence in ner:
+                # Get rid of duplicate lines by seeing if current sentence matches ones previously seen
+                alpha_sent = alphanumeric(sentence["sentence"])
+                if dedupe_init:
+                    dedupe[alpha_sent] = True
+                else:
+                    if alpha_sent in dedupe:
+                        dupe_count += 1
+                        print(f"DROP\t{sentence["sentence"]}", file=sys.stderr)
+                        continue
+                    
                 print(
-                    f"{id}\t{sentence['tag']}\t{sentence['sentence']}", file=sys.stderr
+                    f"{id}\t{sentence['tag']}\t{sentence['score']}\t{sentence['sentence']}",
+                    file=sys.stderr,
                 )
 
-                stats[sentence["tag"]] += 1
+                # stats[sentence["tag"]] += 1
 
                 for span in sentence["spans"]:
                     ent = esc_quotes(span["text"])
@@ -106,6 +121,7 @@ def main():
                         # create entity
                         print(f"CREATE ({entname}:{span['value']} {{val: \"{ent}\"}})")
                     # link article and entity
+                    stats[span["sentiment"]] += 1
                     if span["sentiment"] == "neutral":
                         print(
                             f"CREATE ({artid})-[:REFS {{score: '{span['score']}', prob: '{span['probability']}'}}]->({entname})"
@@ -118,18 +134,30 @@ def main():
                         print(
                             f"CREATE ({artid})-[:HATES {{score: '{span['score']}', prob: '{span['probability']}'}}]->({entname})"
                         )
-            bias_dir = "neutral"
-            if stats["positive"] - stats["negative"] > 0:
-                bias_dir = "positive"
-            if stats["negative"] - stats["positive"] > 0:
-                bias_dir = "negative"
+            # Finished with sentences
+            # dedupe should be full now.
+            if dedupe_init:
+                dedupe_init = False
+            else:
+            # If we haven't seen any dupes and we didn't just fill it, refill dedupe
+                if dupe_count == 0:
+                    dedupe_init = True
+                    dedupe = {}
+                             
             posneg = stats["negative"] + stats["positive"]
             tot = posneg + stats["neutral"]
-            bias = posneg / tot * 100
-            print(
-                f"CREATE ({artid})-[:BIAS {{bias: {bias}, pos: {stats['positive']}, neg: {stats['negative']}, neut: {stats['neutral']}, tot: {tot}}}]->({bias_dir})"
-            )
+            bias_dir = "neutral"
 
+            if tot:
+                bias = posneg / tot * 100
+                if bias > 25:
+                    if stats["positive"] - stats["negative"] > 0:
+                        bias_dir = "positive"
+                    if stats["negative"] - stats["positive"] > 0:
+                        bias_dir = "negative"
+            print(
+                f"CREATE ({artid})-[:BIAS {{bias: {bias:.2f}, pos: {stats['positive']}, neg: {stats['negative']}, neut: {stats['neutral']}, tot: {tot}}}]->({bias_dir})"
+            )                
             #            print(f"{dir(stats)}", file=sys.stderr)
             id += 1
 

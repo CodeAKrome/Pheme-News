@@ -1,7 +1,9 @@
 neo4j:
-	docker run --restart always --publish=7474:7474 --publish=7687:7687 --env NEO4J_AUTH=neo4j/badpassword --volume=/Users/kyle/hub/Pheme-News/neo4j:/data neo4j:latest
+	docker run --restart always --publish=7474:7474 --publish=7687:7687 --env NEO4J_AUTH=neo4j/$NEO4J_PASS --volume=/Users/kyle/hub/Pheme-News/neo4j:/data neo4j:latest
 testload:
-	cypher-shell -u kyle -p $NEO4J_PASS -f testrun4.cypher -d neo4j
+	cypher-shell -u neo4j -p $NEO4J_PASS -f testrun4.cypher -d neo4j
+load:
+	cypher-shell -u neo4j -p $NEO4J_PASS -f run4.cypher -d neo4j
 analize:
 	head run3.jsonl | src/analize.py > analize.txt
 cycle:
