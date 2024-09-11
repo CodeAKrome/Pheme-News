@@ -5,6 +5,8 @@ Love ahead by a nose.
 
 ![neo4jLoveHate](https://github.com/user-attachments/assets/305297f2-41a0-494f-83d2-dbcca0977a15)
 
+This is using the same library as [flair-news](https://github.com/CodeAKrome/shed) in my shed.
+
 ---
 
 # Sneak peek
