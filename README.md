@@ -13,6 +13,12 @@ This is using the same library as [flair-news](https://github.com/CodeAKrome/she
 I've uploaded sample.cypher.gz so you can play along at home.
 This took an entire day to load. You might want to try `head sample.cypher` to make sure it works.
 
+```
+1505 news articles
+ready to start consuming query after 18691584 ms
+Added 28877 nodes, Created 144549 relationships, Set 320810 properties, Added 28768 labels
+```
+
 - Gunzip
 ```sh
 gunzip sample.cypher.gz
@@ -108,3 +114,31 @@ MATCH (n) RETURN (n)
 MATCH (n) RETURN n UNION START n = rel(*) return n;
 ```
 
+---
+
+# Citations
+## [flair](https://github.com/flairNLP/flair) framework:
+
+```
+@inproceedings{akbik2019flair,
+  title={{FLAIR}: An easy-to-use framework for state-of-the-art {NLP}},
+  author={Akbik, Alan and Bergmann, Tanja and Blythe, Duncan and Rasul, Kashif and Schweter, Stefan and Vollgraf, Roland},
+  booktitle={{NAACL} 2019, 2019 Annual Conference of the North American Chapter of the Association for Computational Linguistics (Demonstrations)},
+  pages={54--59},
+  year={2019}
+}
+
+```
+## [NewsMTSC](https://github.com/fhamborg/NewsMTSC?tab=readme-ov-file)
+### [paper](https://aclanthology.org/2021.eacl-main.142/) ([PDF](https://aclanthology.org/2021.eacl-main.142.pdf)):
+
+```
+@InProceedings{Hamborg2021b,
+  author    = {Hamborg, Felix and Donnay, Karsten},
+  title     = {NewsMTSC: (Multi-)Target-dependent Sentiment Classification in News Articles},
+  booktitle = {Proceedings of the 16th Conference of the European Chapter of the Association for Computational Linguistics (EACL 2021)},
+  year      = {2021},
+  month     = {Apr.},
+  location  = {Virtual Event},
+}
+```
