@@ -68,17 +68,14 @@ def main():
             print(f"CREATE ({artid}:Article {{title:\"{esc_quotes(data['title'])}\"}})")
             # link source and article
             # deal with missing data
+            pubdate = "\"N/A\""
             if "published_parsed" in data:
-                print(
-                    f"CREATE ({srcname})-[:PUBLISHED {{date:{data['published_parsed']}}}]->({artid})"
-                )
+                pubdate = data['published_parsed']
             else:
                 if "published" in data:
-                    print(
-                        f"CREATE ({srcname})-[:PUBLISHED {{date:\"{data['published']}\"}}]->({artid})"
-                    )
-                else:
-                    print(f'CREATE ({srcname})-[:PUBLISHED {{date:"NA"}}]->({artid})')
+                    pubdate = data['published']
+
+            print(f'CREATE ({srcname})-[:PUBLISHED {{date: {pubdate}}}]->({artid})')
             # see if entitys exist
             stats = {
                 "positive": 0,
