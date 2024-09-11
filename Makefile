@@ -1,9 +1,17 @@
-neo4j:
+grootconn:
+	cypher-shell -u neo4j -p $NEO4J_PASS -a neo4j://groot:7687
+neo4jmac:
 	docker run --restart always --publish=7474:7474 --publish=7687:7687 --env NEO4J_AUTH=neo4j/$NEO4J_PASS --volume=/Users/kyle/hub/Pheme-News/neo4j:/data neo4j:latest
+neo4j:
+	docker compose up
 testload:
 	cypher-shell -u neo4j -p $NEO4J_PASS -f testrun4.cypher -d neo4j
+sampleload:
+	cypher-shell -u neo4j -p $NEO4J_PASS -f sample.cypher -d neo4j
 load:
 	cypher-shell -u neo4j -p $NEO4J_PASS -f run4.cypher -d neo4j
+grootload:
+	cypher-shell -u neo4j -p ${NEO4J_PASS} -a neo4j://groot:7687 -f run4.cypher -d neo4j
 analize:
 	head run3.jsonl | src/analize.py > analize.txt
 cycle:
