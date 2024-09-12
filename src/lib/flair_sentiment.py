@@ -34,11 +34,10 @@ class FlairSentiment:
                         m = sent[span.start_position : span.end_position]
                         r = sent[span.end_position :]
                         sentiment = self.tsc.infer_from_text(l, m, r)
+                        # Skip unkown labels, only consider known labels as they cause blank nodes
                         for label in span.labels:
-                            if label.value == "<unk>":
-                                val = ""
-                            else:
-                                val = label.value
+                            if label.value == "<unk>": continue
+                            val = label.value
                             spans.append(
                                 {
                                     "text": span.text,
@@ -59,7 +58,7 @@ class FlairSentiment:
                         }
                     )
                 except Exception as e:
-                    sys.stderr.write(f"{e}\nsent:\n{sentence}")
+                    sys.stderr.write(f"{e}\nSentiment targetting failure:\n{sentence}")
                     # raise ValueError(f"{e}\nsent:\n{sentence}")
         return output
 
