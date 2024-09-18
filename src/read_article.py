@@ -128,7 +128,6 @@ class RSSFeedProcessor:
                 # results.append((url, f"Error: {str(e)}"))
 
         session.close()
-        print(f"good {good} bad {bad} {good / good + bad * 100:.2f} %")
         return (good, bad)
         # return results
 

@@ -1,0 +1,63 @@
+Object Graphs: In computer science, object graphs represent a network of objects connected through their relationships, either directly or indirectly. These relationships are modeled as edges between nodes (objects) in a directed graph, which may be cyclic.
+Knowledge Graphs: Knowledge graphs are a type of graph data structure that represents entities (nodes) and their relationships (edges) as triples (subject-predicate-object). This allows for the storage and querying of semantic facts and schema models.
+RDF Triplestore: RDF triplestores are a specific type of graph database that stores semantic facts as subject-predicate-object triples. This format enables the representation of relationships between entities using Universal Resource Identifiers (URIs) as unique identifiers.
+Subject-Verb Agreement: In grammar, subject-verb agreement refers to the rule that the verb should agree with the subject (singular or plural) in number. This applies to sentences with compound subjects connected by “or” or “nor”.
+Subject-Verb-Object Word Order: In linguistic typology, the subject-verb-object (SVO) word order is a common sentence structure where the subject comes first, followed by the verb, and then the object.
+
+Key Takeaways:
+Graph relationships can be represented as directed edges between nodes (objects) or as subject-predicate-object triples.
+Knowledge graphs and RDF triplestores are specific types of graph databases designed for storing and querying semantic facts.
+Subject-verb agreement in grammar ensures that the verb agrees with the subject in number.
+The subject-verb-object word order is a common sentence structure in many languages.
+
+Improve your answer by generating LOVES, HATES and MEHS relationships for the entities. LOVES means approving emotional language was used, HATES means disapproving language was used and MEHS means the statement was purely factual.improve your previous answer by using Ontonotes large model) This is the large 18-class NER model for English that ships with Flair.
+
+Only use the following tags:
+
+Tag	Meaning	Example
+CARDINAL	cardinal value	1, 2, 3, ...
+DATE	date value	2023-12-25, January 1st
+EVENT	event name	Super Bowl, Olympics
+FAC	building name	Empire State Building, Eiffel Tower
+GPE	geo-political entity	United States, France
+LANGUAGE	language name	English, Spanish
+LAW	law name	Constitution, Copyright Act
+LOC	location name	New York City, Paris
+MONEY	money name	dollar, euro
+NORP	affiliation	Republican, Democrat
+ORDINAL	ordinal value	first, second, third
+ORG	organization name	NASA, Google
+PERCENT	percent value	50%, 75%
+PERSON	person name	John Doe, Jane Smith
+PRODUCT	product name	iPhone, MacBook
+QUANTITY	quantity value	10, 20
+TIME	time value	12:00 PM, 5:30 AM
+WORK_OF_ART	name of work of art	Mona Lisa, Star Wars
+
+For example:
+CREATE (wy:LOC {name: "West Yorkshire"})
+CREATE (derekFalkingham:PERSON {name: "Derek Falkingham"})
+
+CREATE (wyp:ORG {name: "West Yorkshire Police"})
+CREATE (wy:LOC {name: "West Yorkshire"})
+CREATE (johnRobins:PERSON {name: "John Robins"})
+CREATE (chiefConstable:ROLE {title: "Chief Constable"})
+CREATE (tracyBrabin:PERSON {name: "Tracy Brabin"})
+CREATE (mayor:ROLE {title: "Mayor"})
+CREATE (pcp:ORG {name: "Police and Crime Panel"})
+CREATE (ccf:ORG {name: "Councillors and Community Figures"})
+CREATE (doc:EVENT {name: "Programme of Consultation"})
+CREATE (derekFalkingham:PERSON {name: "Derek Falkingham"})
+CREATE (victim:PERSON {name: "Victim"})
+CREATE (harehills:LOC {name: "Harehills"})
+CREATE (leeds:LOC {name: "Leeds"})
+CREATE (friendsOfOtleyLido:ORG {name: "Friends of Otley Lido"})
+CREATE (plans:WORK_OF_ART {name: "Plans"})
+CREATE (wyp)-[:IS_PART_OF]->(wy)
+CREATE (johnRobins)-[:IS]->(chiefConstable)
+CREATE (tracyBrabin)-[:IS]->(mayor)
+CREATE (johnRobins)-[:TOLD {feel: "MEHS"}]->(pcp)
+CREATE (tracyBrabin)-[:PRAISED {feel: "LOVES"}]->(ccf)
+CREATE (tracyBrabin)-[:DEVELOPING {feel: "MEHS"}]->(doc)
+CREATE (derekFalkingham)-[:SENT {feel: "HATES"}]->(victim)
+CREATE (friendsOfOtleyLido)-[:WILL_SHARE {feel: "MEHS"}]->(plans)

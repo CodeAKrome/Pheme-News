@@ -1,3 +1,6 @@
+clearcache:
+	rm cache/articles.json
+	rm cache/counter.json
 grootconn:
 	cypher-shell -u neo4j -p $NEO4J_PASS -a neo4j://groot:7687
 neo4jmac:
@@ -17,15 +20,19 @@ analize:
 cycle:
 	cat config/oneshot_rss.tsv | python src/read_rss.py
 run1:
-	cat config/sample_rss_feeds.tsv | python src/read_rss.py > run1.jsonl
+	cat config/sample_rss_feeds.tsv | python src/read_rss.py > cache/read_rss.jsonl
 run2:
-	cat run1.jsonl | python src/read_article.py > run2.jsonl
+	cat cache/read_rss.jsonl | python src/tallyman.py > cache/tallyman.jsonl
 run3:
-	cat run2.jsonl | grep '"art"' > run3.jsonl
+	cat cache/tallyman.jsonl | python src/read_article.py > cache/read_article.jsonl
 run4:
-	cat run3.jsonl | python src/sentiment.py | grep CREATE > run4.cypher
-testrun4:
-	head run3.jsonl | python src/sentiment.py | grep CREATE > testrun4.cypher
+	cat cache/read_article.jsonl | grep '"art"' > cache/art.jsonl
+run5:
+	cat cache/art.jsonl | python src/flair_news.py | egrep '^\{' > cache/flair_news.jsonl
+run6:
+	cat cache/flair_news.jsonl | python src/dedupe.py > cache/dedupe.jsonl
+run7:
+	cat cache/dedupe.jsonl | python src/cypher.py > cache/cypher.cypher
 testrun:
 	head -n 1 batch-0.tsv | python src/read_rss.py | python src/read_article.py | grep '"art"' | tee testrun.jsonl | python src/sentiment.py | grep CREATE > testrun.cypher
 media_thumbnail:

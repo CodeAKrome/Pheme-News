@@ -16,7 +16,7 @@ fc = file_cache(CACHEFILE)
 try:
     count_fh = open(COUNTERFILE, 'r')
     idline = count_fh.read()
-    id = loads(idline)['id']
+    id = loads(idline)["id"]
     count_fh.close()
 except FileNotFoundError as e:
     count_fh = open(COUNTERFILE, 'w')
@@ -30,10 +30,10 @@ for line in sys.stdin:
     line = line.strip()
     if not line: continue
     data = loads(line)
-    if fc.cached(data['link']): continue
-    fc.put(data['link'], id)
-    data['id'] = id
-    print(data)
+    if fc.cached(data["link"]): continue
+    fc.put(data["link"], id)
+    data["id"] = id
+    print(dumps(data))
     id += 1
 count_fh.write(dumps({"id": id}))
 count_fh.close()

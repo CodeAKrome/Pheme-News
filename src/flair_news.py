@@ -17,6 +17,6 @@ for line in sys.stdin:
     if not 'text' in data:
         print(line)
         continue
-    data['ner'] = fs.process_text(data['text'])
+    data["ner"] = fs.process_text(data["text"])
     print(dumps(data))
     

@@ -1,10 +1,12 @@
 import sys
+import re
 from json import loads, dumps, JSONDecodeError
 
 """Do targetted sentiment detection on news articles. If no text field, passthrough."""
 
 # This is the cutoff for ratio of love/hate as percent of total entities referenced in percent.
 BIASTHRESHHOLD = 25
+PATTERN = re.compile(r"[^a-zA-Z0-9]")
 
 def alphanumeric(text):
     return PATTERN.sub("", text)
@@ -52,7 +54,7 @@ for line in sys.stdin:
         source.append(srcname)
         print(f"CREATE ({srcname}:Source)")
     # Article
-    artid = data{id}
+    artid = data['id']
     print(f"CREATE ({artid}:Article {{title:\"{esc_quotes(data['title'])}\", link:\"{data['link']}\"}})")
     # link source and article
     # deal with missing data

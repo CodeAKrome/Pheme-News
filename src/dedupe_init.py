@@ -15,16 +15,9 @@ PATTERN = re.compile(r"[^a-zA-Z0-9]")
 def alphanumeric(text):
     return PATTERN.sub("", text)
 
-try:
-    with open(DUPEFILE, "r") as dfh:
-        deadlines = loads(dfh.read())
-except FileNotFoundError as e:
-    print(f"Missing: {DUPEFILE}\n{e}\n", file=sys.stderr)
-    exit(1)
-except JSONDecodeError as e:
-    sys.stderr.write(f"JSONload error {DUPEFILE} file: {e}\n")
-    exit(1)
-    
+deadlines = defaultdict(lambda:[]) # This will be cached to use after the first article time through
+last_src = False    
+
 for line in sys.stdin:
     line = line.strip()
     if not line: continue
@@ -35,27 +28,33 @@ for line in sys.stdin:
         continue
     # This should mean this is an rss flavored record
     if not 'ner' in data:
-        print(line)
         continue
 
     src = data['source']
-    clean_ner = []
-    try:
-        dedupe = deadlines[src]
-    except KeyError:
-        sys.stderr.write(f"Missing source {src} in dedupe cache.\n")
+    if last_src:
+        if src != last_src:
+            init = True
+            last_src = src
+            dedupe = []
+    else:
+        last_src = src
         dedupe = []
+        init = True # Flag to determine whether we are on the first article or not.
     
     for sentence in data['ner']:
         sent = sentence['sentence']
         alpha_sent = alphanumeric(sent)
+        if init:
+            dedupe.append(alpha_sent)
+        else:
+            if alpha_sent in dedupe:
+                if alpha_sent not in deadlines[src]:
+                    deadlines[src].append(alpha_sent)
 
-        if alpha_sent in dedupe:
-            print(f"DROP\t{src}\t{sent}", file=sys.stderr)
-            continue
+    # Finished with sentences
+    # dedupe should be full now.
+    if init:
+        init = False
 
-        clean_ner.append(sentence)
-
-    # Sentences done
-    data['ner'] = clean_ner
-    print(dumps(data))
+with open(DUPEFILE, "w") as dfh:
+    print(dumps(deadlines), file=dfh)

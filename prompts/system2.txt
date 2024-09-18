@@ -1,0 +1,6 @@
+**Input Text:** [text]
+**Knowledge Graph:** DBpedia
+**Task:** Extract RDF triples from the input text, using entities and relations from the specified knowledge graph.
+**Output Format:**
+<subject> <predicate> <object> .
+
