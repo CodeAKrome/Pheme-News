@@ -1,3 +1,11 @@
+nerd:
+	cat cache/11rec.jsonl | python src/nerd.py
+rmchroma:
+	rm -Rf chroma/*
+entities:
+	jq -r '.id as $id | .ner[] | .spans[] | [$id, .text, .value, .sentiment] | @tsv' cache/dedupe.jsonl > cache/entities.tsv
+entities2:
+	jq -r '.ner[] | .spans[] | [.text, .value] | @tsv' cache/dedupe.jsonl | sort | uniq > cache/entities2.tsv
 clearcache:
 	rm cache/articles.json
 	rm cache/counter.json
@@ -32,6 +40,8 @@ run5:
 run6:
 	cat cache/flair_news.jsonl | python src/dedupe.py > cache/dedupe.jsonl
 run7:
+	cat cache/dedupe.jsonl| python src/vectorize.py
+run8:
 	cat cache/dedupe.jsonl | python src/cypher.py > cache/cypher.cypher
 testrun:
 	head -n 1 batch-0.tsv | python src/read_rss.py | python src/read_article.py | grep '"art"' | tee testrun.jsonl | python src/sentiment.py | grep CREATE > testrun.cypher
