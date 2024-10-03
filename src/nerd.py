@@ -194,7 +194,8 @@ def nerd(suspect, sentence, art, partial_matches):
     
     for person, summ in usual_suspects.items():
         # prompt = f"Is {suspect} in the following sentence:\n{sentence}\nthe same person as {person} in the following summary:\n{summ}\nAnswer 'yes' or 'no'."
-        prompt = f"Is {suspect} in the following:\n{sentence} in the news article:\n{art}\nthe same person as {person} in the following summary:\n{summ}\nAnswer 'yes' or 'no'.\n"
+        prompt = f"Is {suspect} in the following:\n{sentence}\nthe same person as {person} in the following summary:\n{summ}\nAnswer 'yes' or 'no'.\n"
+        # prompt = f"Is {suspect} in the following:\n{sentence} in the news article:\n{art}\nthe same person as {person} in the following summary:\n{summ}\nAnswer 'yes' or 'no'.\n"
         # prompt = f"{system} Is {suspect} in the following sentence: {sentence} the same person as {person} in the following summary: {summ}"
 
         #groq
@@ -223,7 +224,8 @@ def nerd(suspect, sentence, art, partial_matches):
     l = len(lineup)
     if not l: return None
     
-    system = f"{system_base}\nThere are {l} people that might match the description of {suspect} in the sentence: {sentence}\n in the article: {art}.\n"
+    system = f"{system_base}\nThere are {l} people that might match the description of {suspect} in the sentences: {sentence}\n"
+    # system = f"{system_base}\nThere are {l} people that might match the description of {suspect} in the sentence: {sentence}\n in the article: {art}.\n"
     system += f"Is {suspect} in the summary: {summ}\n the same person as one of the following suspects?\n"
     system += f"These {l} choices wil be of the format <id>id<summary>summary<end>.\n"
     system += f"You will reply with the id number and only the id number of the summary that identifies {suspect} or the None if none of them match. You will not output any other text.\n"
@@ -311,14 +313,26 @@ def main(assistant, nerd_map):
 
         art_map = {}
 
-        # Sentence iteration.        
+        # Collect example sentences.
+        examples = {}
+        for ent in ner:
+            for span in ent['spans']:
+                if span['value'] == "PERSON":
+                    suspect = span['text']
+                    sentence = ent['sentence']
+                    if suspect in examples:
+                        examples[suspect] += sentence
+                    else:
+                        examples[suspect] = sentence
+
+        # Sentence iteration, 2nd pass.
         for ent in ner:
             start_time = perf_counter()
             sys.stderr.write(f"\n=>\t{ent['sentence']}\n")
 
             # NER to the D in single sentence
             alias = {}
-
+                    
             for span in ent['spans']:
                 if span['value'] == "PERSON":
                     suspect = span['text']
@@ -341,7 +355,7 @@ def main(assistant, nerd_map):
                         
                         
                         # Detection
-                        res = nerd(suspect, sentence, art, partial_matches)
+                        res = nerd(suspect, examples[suspect], art, partial_matches)
                     
                     if not res: continue
                     alias[suspect] = res
