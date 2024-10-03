@@ -194,7 +194,7 @@ def nerd(suspect, sentence, art, partial_matches):
     
     for person, summ in usual_suspects.items():
         # prompt = f"Is {suspect} in the following sentence:\n{sentence}\nthe same person as {person} in the following summary:\n{summ}\nAnswer 'yes' or 'no'."
-        prompt = f"Is {suspect} in the following {sentence} in the news article:\n{art}\nthe same person as {person} in the following summary:\n{summ}\nAnswer 'yes' or 'no'.\n"
+        prompt = f"Is {suspect} in the following:\n{sentence} in the news article:\n{art}\nthe same person as {person} in the following summary:\n{summ}\nAnswer 'yes' or 'no'.\n"
         # prompt = f"{system} Is {suspect} in the following sentence: {sentence} the same person as {person} in the following summary: {summ}"
 
         #groq
@@ -285,6 +285,7 @@ def nerd(suspect, sentence, art, partial_matches):
     return None
             
 def main(assistant, nerd_map):
+    recno = 1
 
     for line in sys.stdin:
         line = line.strip()
@@ -298,6 +299,11 @@ def main(assistant, nerd_map):
         if not 'ner' in data:
             print(line)
             continue
+
+
+        sys.stderr.write(f"\n\n=== RECNO: {recno} ===\n\n")
+        recno += 1
+
         # Have data
         ner = data['ner']
         wikimap = []
