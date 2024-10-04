@@ -159,7 +159,8 @@ def summ_people(suspect):
     dex = {}
 
     for person in wiki_cache(suspect):
-        if wikipeeps(person):
+        if True:
+        # if wikipeeps(person):
             try:
                 dex[person] = wiki_summary_cache(person)
             except Exception as e:
@@ -168,7 +169,10 @@ def summ_people(suspect):
             sys.stderr.write(f"Not person: {person}\n")
     return dex    
 
-def nerd(suspect, sentence, art, partial_matches):
+@cache
+def nerd(suspect, sentence):
+# def nerd(suspect, sentence, partial_matches):
+# def nerd(suspect, sentence, art, partial_matches):
     # yes = dumps({"answer": "Yes"})
     # no = dumps({"answer": "No"})
     system_base = f"You are a world famous detective like Sherlock Holmes. You always answer accurately. You will find this person's true identity.\n"
@@ -185,16 +189,16 @@ def nerd(suspect, sentence, art, partial_matches):
     usual_suspects = summ_people(suspect)
     
     # Add partial matches from history to the dictionary
-    if partial_matches:
-        for ent in partial_matches:
-            usual_suspects[ent] = wiki_cache(ent)
-            sys.stderr.write(F"ADD PART:\n{ent}\n")
+    # if partial_matches:
+    #     for ent in partial_matches:
+    #         usual_suspects[ent] = wiki_cache(ent)
+    #         sys.stderr.write(F"ADD PART:\n{ent}\n")
             
-    lineup = {}
+    # lineup = {}
     
     for person, summ in usual_suspects.items():
         # prompt = f"Is {suspect} in the following sentence:\n{sentence}\nthe same person as {person} in the following summary:\n{summ}\nAnswer 'yes' or 'no'."
-        prompt = f"Is {suspect} in the following:\n{sentence}\nthe same person as {person} in the following summary:\n{summ}\nAnswer 'yes' or 'no'.\n"
+        prompt = f"Is <suspect>{suspect}</suspect> in the following example:\n<example>{sentence}</example>\nthe same person as <person>{person}</person> in the following summary:\n<summary>{summ}</summary>\nAnswer 'yes' or 'no'.\n"
         # prompt = f"Is {suspect} in the following:\n{sentence} in the news article:\n{art}\nthe same person as {person} in the following summary:\n{summ}\nAnswer 'yes' or 'no'.\n"
         # prompt = f"{system} Is {suspect} in the following sentence: {sentence} the same person as {person} in the following summary: {summ}"
 
@@ -218,7 +222,11 @@ def nerd(suspect, sentence, art, partial_matches):
         # print(f"{Back.WHITE}{Fore.GREEN}{suspect} -> {person}\t{ans}{Style.RESET_ALL}\n", file=sys.stderr)
                 
         if "yes" in ans:
-            lineup[person] = summ
+            sys.stderr.write(f"\n\n\033[41m\033[91m Match found: {suspect} -> {person}\033[0m\nsummary: {summ}\n")
+            return person
+            # lineup[person] = summ
+
+    return None
             
     # sys.stderr.write("lineup")
     l = len(lineup)
@@ -226,9 +234,9 @@ def nerd(suspect, sentence, art, partial_matches):
     
     system = f"{system_base}\nThere are {l} people that might match the description of {suspect} in the sentences: {sentence}\n"
     # system = f"{system_base}\nThere are {l} people that might match the description of {suspect} in the sentence: {sentence}\n in the article: {art}.\n"
-    system += f"Is {suspect} in the summary: {summ}\n the same person as one of the following suspects?\n"
-    system += f"These {l} choices wil be of the format <id>id<summary>summary<end>.\n"
-    system += f"You will reply with the id number and only the id number of the summary that identifies {suspect} or the None if none of them match. You will not output any other text.\n"
+    system += f"Is <suspect>{suspect}</suspect> in the summary:\n<summary>{summ}</summary>\n the same person as one of the following suspects?\n"
+    system += f"These {l} choices will be of the format <id>id</id><summary>summary</summary>.\n"
+    system += f"You will reply with the id number and only the id number of the summary that identifies <suspect>{suspect}</suspect> or the None if none of them match. You will not output any other text.\n"
     
     # groq
     assistant.set_system(system)
@@ -238,15 +246,13 @@ def nerd(suspect, sentence, art, partial_matches):
     for person, summ in lineup.items():
         # groq
         # system += f"<id>{i}<summary>{summ}<end>\n\n"
-        prompt += f"<id>{i}<summary>{summ}<end>\n\n"
-
+        prompt += f"<id>{i}</id><summary>{summ}</summary>\n\n"
         sys.stderr.write(f"can: {i}\t{person}\n")
-
         i += 1
 
     # groq
     # system += "Which one is it?"
-    prompt += f"Reply with an integer between 0 and {i - 1} describing the person or None if no description fits. The name, sex, nationality and profession must match. Do not match sons, daughters, husbands or wives of the person.\n"
+    prompt += f"Reply with an id between 0 and {i - 1} inclusive describing the person or None if no description fits. The name, sex, nationality and profession must match. Do not match sons, daughters, husbands or wives of the person.\n"
     ans = assistant.says(prompt)
 
     # ans = ollama_says(system)
@@ -274,6 +280,7 @@ def nerd(suspect, sentence, art, partial_matches):
         sys.stderr.write(f"\n\n\033[41m\033[91m Match found: {suspect} -> {person}\033[0m\nsummary: {summ}\n")
         
         # Matches? We need those stinkin' matches!
+        # Taken care of below in main()
         # nerd_map[suspect] = person    
         
         
@@ -309,7 +316,7 @@ def main(assistant, nerd_map):
         # Have data
         ner = data['ner']
         wikimap = []
-        art = data['text']
+        # art = data['text']
 
         art_map = {}
 
@@ -331,43 +338,69 @@ def main(assistant, nerd_map):
             sys.stderr.write(f"\n=>\t{ent['sentence']}\n")
 
             # NER to the D in single sentence
-            alias = {}
+            # alias = {}
                     
             for span in ent['spans']:
                 if span['value'] == "PERSON":
                     suspect = span['text']
                     sentence = ent['sentence']
 
+                    res = None
+                    sys.stderr.write(f"\nTRY: {suspect}\n")
+                    for aka, person in art_map.items():
+                        if suspect in aka:
+                            res = art_map[aka]
+                        else:
+                            if suspect in person:
+                                res = art_map[person]
+                        if res:
+                            art_map[suspect] = person
+                            sys.stderr.write(f"\n\033[41m\033[91m NERD {suspect} -> {res} added {suspect} -> {person} \033[0m\n")
+                            break
+                    if not res:
+                        res = nerd(suspect, examples[suspect])
+                        
                     # You look familiar
-                    if suspect in art_map:
-                        res = art_map[suspect]
+                    # if suspect in art_map:
+                    #     res = art_map[suspect]
                     # if suspect in nerd_map:
                     #     res = nerd_map[suspect]
                         # sys.stderr.write(f"\n{Back.WHITE}{Fore.CYAN}NERD {suspect} -> {res}{Style.RESET_ALL}\n")
-                        sys.stderr.write(f"\n\033[41m\033[91m NERD {suspect} -> {res} \033[0m\n")
-                    else:
+                    #     sys.stderr.write(f"\n\033[41m\033[91m NERD {suspect} -> {res} \033[0m\n")
+                    # else:
                         # Try substring. They ofter say whole name then refer by last or title. This is 
-                        partial_matches = [key for key in art_map if suspect in key]
+                                
+                            
+                        # partial_matches = [key for key in art_map if suspect in key]
                         # partial_matches = [key for key in nerd_map if suspect in key]
                         
-                        if partial_matches:
-                            sys.stderr.write(f"\033[41m\033[91m partials: {', '.join(partial_matches)} \033[0m\n")
+                        # if partial_matches:
+                        #     sys.stderr.write(f"\033[41m\033[91m partials: {', '.join(partial_matches)} \033[0m\n")
                         
                         
                         # Detection
-                        res = nerd(suspect, examples[suspect], art, partial_matches)
+                    # res = nerd(suspect, examples[suspect])
+                        # res = nerd(suspect, examples[suspect], partial_matches)
+                        # res = nerd(suspect, examples[suspect], art, partial_matches)
                     
                     if not res: continue
-                    alias[suspect] = res
+                    # alias[suspect] = res
 
+                    # This will keep mapping, no harm
+                    # map found real name to itself.
                     # Persist over data stream. Will keep writing map, is ok.
                     nerd_map[suspect] = res
+                    nerd_map[res] = res
+                    # resets every article
                     art_map[suspect] = res
-                    
+                    art_map[res] = res
 
-            wikimap.append(alias)
+            wikimap.append(art_map)
+            # wikimap.append(alias)
             lap = perf_counter() - start_time
+            
             sys.stderr.write(f"\nTime: {lap:.2f}s\n")
+            
         data['wikimap'] = wikimap
         print(dumps(data))
 
