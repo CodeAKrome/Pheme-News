@@ -27,6 +27,8 @@ analize:
 	head run3.jsonl | src/analize.py > analize.txt
 cycle:
 	cat config/oneshot_rss.tsv | python src/read_rss.py
+run1pol:
+	cat config/political_feeds.tsv | python src/read_rss.py > cache/read_rss.jsonl
 run1:
 	cat config/sample_rss_feeds.tsv | python src/read_rss.py > cache/read_rss.jsonl
 run2:
