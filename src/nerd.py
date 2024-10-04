@@ -76,11 +76,7 @@ class GroqAI:
 
     def says(self, prompt):
         self.chat_history.append({"role": "user", "content": prompt})
-
-        
         #sys.stderr.write(f"history: {self.chat_history}\n")
-        
-
         response = self.groq_client.chat.completions.create(
             model=self.model,
             messages=self.chat_history,
@@ -171,127 +167,33 @@ def summ_people(suspect):
 
 @cache
 def nerd(suspect, sentence):
-# def nerd(suspect, sentence, partial_matches):
-# def nerd(suspect, sentence, art, partial_matches):
-    # yes = dumps({"answer": "Yes"})
-    # no = dumps({"answer": "No"})
     system_base = f"You are a world famous detective like Sherlock Holmes. You always answer accurately. You will find this person's true identity.\n"
     system_base += "You will correctly identify this person. You will not mistake them for any other person or member of their family like a son, daughter or wife.\n"
     system_base += "Professions, sexes and nationalities must match for correct identification.\n"
-    # system = f"{system_base}Only reply with {yes} or {no} to the following question using JSON:"
     system = f"{system_base}Only reply with 'yes' or 'no' to the following question:\n"
 
-# groq
-    # sys.stderr.write(F"SYSTEM:\n{system}\n")
-    
     assistant.set_system(system)
-
     usual_suspects = summ_people(suspect)
     
-    # Add partial matches from history to the dictionary
-    # if partial_matches:
-    #     for ent in partial_matches:
-    #         usual_suspects[ent] = wiki_cache(ent)
-    #         sys.stderr.write(F"ADD PART:\n{ent}\n")
-            
-    # lineup = {}
-    
     for person, summ in usual_suspects.items():
-        # prompt = f"Is {suspect} in the following sentence:\n{sentence}\nthe same person as {person} in the following summary:\n{summ}\nAnswer 'yes' or 'no'."
         prompt = f"Is <suspect>{suspect}</suspect> in the following example:\n<example>{sentence}</example>\nthe same person as <person>{person}</person> in the following summary:\n<summary>{summ}</summary>\nAnswer 'yes' or 'no'.\n"
-        # prompt = f"Is {suspect} in the following:\n{sentence} in the news article:\n{art}\nthe same person as {person} in the following summary:\n{summ}\nAnswer 'yes' or 'no'.\n"
-        # prompt = f"{system} Is {suspect} in the following sentence: {sentence} the same person as {person} in the following summary: {summ}"
-
-        #groq
         raw = assistant.says(prompt)
-        
-        
+
         sys.stderr.write(f"RAW: {raw}\n")
-        
         
         ans = "no"
         if "yes" in raw.lower():
             ans = "yes"
-        
-        # ans = ollama_says(prompt)
-        # prompt = f"Is {suspect} in the following sentence: {sentence} the same person as {person} in the following summary: {summ}"
-        # ans = gemini_says(system, prompt)
 
         # sys.stderr.write(f"\033[41m\033[91m {suspect} -> {person}\t{ans} \033[0m\n")
         sys.stderr.write(f"{suspect} -> {person}\t{ans}\n")
-        # print(f"{Back.WHITE}{Fore.GREEN}{suspect} -> {person}\t{ans}{Style.RESET_ALL}\n", file=sys.stderr)
                 
         if "yes" in ans:
-            sys.stderr.write(f"\n\n\033[41m\033[91m Match found: {suspect} -> {person}\033[0m\nsummary: {summ}\n")
+            sys.stderr.write(f"\n\n\033[41m\033[91m Match found: {suspect} -> {person}\033[0m\nsummary: {summ}\n\n")
             return person
-            # lineup[person] = summ
 
     return None
             
-    # sys.stderr.write("lineup")
-    l = len(lineup)
-    if not l: return None
-    
-    system = f"{system_base}\nThere are {l} people that might match the description of {suspect} in the sentences: {sentence}\n"
-    # system = f"{system_base}\nThere are {l} people that might match the description of {suspect} in the sentence: {sentence}\n in the article: {art}.\n"
-    system += f"Is <suspect>{suspect}</suspect> in the summary:\n<summary>{summ}</summary>\n the same person as one of the following suspects?\n"
-    system += f"These {l} choices will be of the format <id>id</id><summary>summary</summary>.\n"
-    system += f"You will reply with the id number and only the id number of the summary that identifies <suspect>{suspect}</suspect> or the None if none of them match. You will not output any other text.\n"
-    
-    # groq
-    assistant.set_system(system)
-    prompt = ''
-    
-    i =0
-    for person, summ in lineup.items():
-        # groq
-        # system += f"<id>{i}<summary>{summ}<end>\n\n"
-        prompt += f"<id>{i}</id><summary>{summ}</summary>\n\n"
-        sys.stderr.write(f"can: {i}\t{person}\n")
-        i += 1
-
-    # groq
-    # system += "Which one is it?"
-    prompt += f"Reply with an id between 0 and {i - 1} inclusive describing the person or None if no description fits. The name, sex, nationality and profession must match. Do not match sons, daughters, husbands or wives of the person.\n"
-    ans = assistant.says(prompt)
-
-    # ans = ollama_says(system)
-    # prompt = "Which one is it?"
-    # ans = gemini_says(system, prompt)
-
-    # sys.stderr.write(f"\nSYS: {system}")
-
-
-    sys.stderr.write(f"ANS: {ans}\n")
-
-    if ans == "None" or ans == None:
-        sys.stderr.write(f"No match found: {suspect}\n")
-        return None
-
-    try:
-        match = re.search(r'\d+', ans)
-        if match:
-            ans = match.group()
-        else:
-            return None
-        idx = int(numeric(ans))
-        person, summ = list(lineup.items())[idx]
-        
-        sys.stderr.write(f"\n\n\033[41m\033[91m Match found: {suspect} -> {person}\033[0m\nsummary: {summ}\n")
-        
-        # Matches? We need those stinkin' matches!
-        # Taken care of below in main()
-        # nerd_map[suspect] = person    
-        
-        
-        return person
-    except ValueError as e:
-        sys.stderr.write(f"\nAnswer was junk: {ans} {e}\n")
-    except IndexError as e:
-        sys.stderr.write(f"\nAnswer out of range junk: {ans} {e}\n")
-    except TypeError as e:
-        sys.stderr.write(f"\nAnswer wrong type junk: {ans} {e}\n")
-    return None
             
 def main(assistant, nerd_map):
     recno = 1
@@ -309,15 +211,13 @@ def main(assistant, nerd_map):
             print(line)
             continue
 
-
         sys.stderr.write(f"\n\n=== RECNO: {recno} ===\n\n")
+
         recno += 1
 
         # Have data
         ner = data['ner']
         wikimap = []
-        # art = data['text']
-
         art_map = {}
 
         # Collect example sentences.
@@ -332,14 +232,12 @@ def main(assistant, nerd_map):
                     else:
                         examples[suspect] = sentence
 
-        # Sentence iteration, 2nd pass.
+        # Article iteration, 2nd pass.
         for ent in ner:
             start_time = perf_counter()
             sys.stderr.write(f"\n=>\t{ent['sentence']}\n")
 
             # NER to the D in single sentence
-            # alias = {}
-                    
             for span in ent['spans']:
                 if span['value'] == "PERSON":
                     suspect = span['text']
@@ -359,33 +257,8 @@ def main(assistant, nerd_map):
                             break
                     if not res:
                         res = nerd(suspect, examples[suspect])
-                        
-                    # You look familiar
-                    # if suspect in art_map:
-                    #     res = art_map[suspect]
-                    # if suspect in nerd_map:
-                    #     res = nerd_map[suspect]
-                        # sys.stderr.write(f"\n{Back.WHITE}{Fore.CYAN}NERD {suspect} -> {res}{Style.RESET_ALL}\n")
-                    #     sys.stderr.write(f"\n\033[41m\033[91m NERD {suspect} -> {res} \033[0m\n")
-                    # else:
-                        # Try substring. They ofter say whole name then refer by last or title. This is 
-                                
-                            
-                        # partial_matches = [key for key in art_map if suspect in key]
-                        # partial_matches = [key for key in nerd_map if suspect in key]
-                        
-                        # if partial_matches:
-                        #     sys.stderr.write(f"\033[41m\033[91m partials: {', '.join(partial_matches)} \033[0m\n")
-                        
-                        
-                        # Detection
-                    # res = nerd(suspect, examples[suspect])
-                        # res = nerd(suspect, examples[suspect], partial_matches)
-                        # res = nerd(suspect, examples[suspect], art, partial_matches)
                     
                     if not res: continue
-                    # alias[suspect] = res
-
                     # This will keep mapping, no harm
                     # map found real name to itself.
                     # Persist over data stream. Will keep writing map, is ok.
@@ -396,7 +269,6 @@ def main(assistant, nerd_map):
                     art_map[res] = res
 
             wikimap.append(art_map)
-            # wikimap.append(alias)
             lap = perf_counter() - start_time
             
             sys.stderr.write(f"\nTime: {lap:.2f}s\n")
