@@ -1,0 +1,1 @@
+# Chroma database files

@@ -25,8 +25,8 @@ grootload:
 	cypher-shell -u neo4j -p ${NEO4J_PASS} -a neo4j://groot:7687 -f run4.cypher -d neo4j
 analize:
 	head run3.jsonl | src/analize.py > analize.txt
-cycle:
-	cat config/oneshot_rss.tsv | python src/read_rss.py
+oneshot:
+	cat config/oneshot_rss.tsv | python src/read_rss.py > cache/read_rss.jsonl
 run1pol:
 	cat config/political_feeds.tsv | python src/read_rss.py > cache/read_rss.jsonl
 run1:

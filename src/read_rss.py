@@ -44,6 +44,7 @@ class FeedRecord:
 
 @dataclass(slots=True)
 class Article:
+    lang: str
     source: str
     title: str
     link: str
@@ -120,6 +121,7 @@ class ReadRss(BaseException):
                     for entry in records.entries:
                         # ic(entry)
                         article = Article(
+                            lang=feed_rec.lang,
                             source=feed_rec.source,
                             title=entry.title,
                             link=entry.link,

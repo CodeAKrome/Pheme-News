@@ -11,6 +11,8 @@ import re
 from functools import cache
 from time import sleep
 from lib.ollamaai import OllamaAI
+from lib.groqaai import GroqAI
+from lib.geminiai import GeminiAI
 
 """model name, [groq ollama] default ollama"""
 
@@ -47,36 +49,7 @@ def summ_people(suspect):
     return dex
 
 @cache
-def nerd(suspect, sentence):
-    system_base = f"You are a world famous detective like Sherlock Holmes. You always answer accurately. You will find this person's true identity.\n"
-    system_base += "You will correctly identify this person. You will not mistake them for any other person or member of their family like a son, daughter or wife.\n"
-    system_base += "Professions, sexes and nationalities must match for correct identification.\n"
-    system = f"{system_base}Only reply with 'yes' or 'no' to the following question:\n"
-
-    assistant.set_system(system)
-    usual_suspects = summ_people(suspect)
-
-    for person, summ in usual_suspects.items():
-        prompt = f"Is <suspect>{suspect}</suspect> in the following example:\n<example>{sentence}</example>\nthe same person as <person>{person}</person> in the following summary:\n<summary>{summ}</summary>\nAnswer 'yes' or 'no'.\n"
-        raw = assistant.says(prompt)
-
-        sys.stderr.write(f"RAW: {raw}\n")
-
-        ans = "no"
-        if "yes" in raw.lower():
-            ans = "yes"
-
-        # sys.stderr.write(f"\033[41m\033[91m {suspect} -> {person}\t{ans} \033[0m\n")
-        sys.stderr.write(f"{suspect} -> {person}\t{ans}\n")
-
-        if "yes" in ans:
-            sys.stderr.write(f"\n\n\033[41m\033[91m Match found: {suspect} -> {person}\033[0m\nsummary: {summ}\n\n")
-            return person
-
-    return None
-
-@cache
-def nerd2(tag, suspect, sentence):
+def nerd(tag, suspect, sentence):
     system_base = f"You are a world famous detective like Sherlock Holmes. You always answer accurately.\n"
     system_base += """Tag	Meaning	Example
 EVENT	event name	Super Bowl, Olympics
@@ -209,7 +182,7 @@ def procart(data):
                     break
             if not res:
                 if suspect and suspect_key in examples:
-                    res = nerd2(tag, suspect, examples[suspect_key])
+                    res = nerd(tag, suspect, examples[suspect_key])
 
             if not res: continue
             # resets every article
@@ -316,22 +289,25 @@ if __name__ == "__main__":
 
     # This maps aeveryone we found in entire data stream
     nerd_map = {}
+    model = MODEL
 
     if len(sys.argv) > 1:
-        MODEL = sys.argv[1]
+        model = sys.argv[1]
 
+    # Default to Ollama
     assistant_name = "Ollama"
 
-    # if len(sys.argv) > 2:
-    #     if sys.argv[2] == 'groq':
-    #         assistant = GroqAI()
-    #         assistant_name = "Groq"
-    #     else:
-    #         assistant = OllamaAI(model=MODEL)
-    # else:
-    #     assistant = OllamaAI(model=MODEL)
+    if len(sys.argv) > 2:
+        if sys.argv[2] == 'groq':
+            assistant = GroqAI(model=model)
+            assistant_name = "Groq"
+        if sys.argv[2] == 'gemini':
+            assistant = GeminiAI(model=model)
+            assistant_name = "Gemini"
 
-    assistant = OllamaAI(model=MODEL)
+    if assistant_name == "Ollama":
+        assistant = OllamaAI(model=model)
+
 
     sys.stderr.write(f"\n===\nUsing model: {MODEL} with assistant {assistant_name}\n===\n")
 
