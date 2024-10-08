@@ -11,7 +11,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import urllib.error
 import socket
 
-VALID_RECORD = re.compile(r"^[a-zA-Z][a-zA-Z0-9\-]*[\s\t]+https?:\/\/[^\t]*$")
+VALID_RECORD = re.compile(r"^[a-z][a-z][\s\t]+[a-zA-Z][a-zA-Z0-9\-]*[\s\t]+https?:\/\/[^\t]*$")
 FORMAT_ERROR = "Invalid input format. Should be 2 tab delimited columns: feed name (starting with a letter, then alphanumerics) and feed URL."
 DEFAULT_TIMEOUT = 30
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
@@ -19,16 +19,18 @@ USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 
 @dataclass(slots=True)
 class FeedSource:
+    lang: str
     source: str
     url: str
 
     def __post_init__(self):
-        if not VALID_RECORD.match(f"{self.source}\t{self.url}"):
+        if not VALID_RECORD.match(f"{self.lang}\t{self.source}\t{self.url}"):
             raise ValueError(FORMAT_ERROR)
 
 
 @dataclass(slots=True)
 class FeedRecord:
+    lang: str
     source: str
     link: str
     title: str
@@ -77,10 +79,10 @@ class ReadRss(BaseException):
     def validate_feed(self, line) -> FeedRecord:
         if line:
             if VALID_RECORD.fullmatch(line):
-                source, url = line.split()
-                if not (source and url):
+                lang, source, url = line.split()
+                if not (lang and source and url):
                     raise ValueError(FORMAT_ERROR)
-                return FeedSource(source, url)
+                return FeedSource(lang, source, url)
             raise ValueError(f"{FORMAT_ERROR}\n{line}")
         raise ValueError("Blank line.")
 
@@ -103,6 +105,7 @@ class ReadRss(BaseException):
                 records = feedparser.parse(data)
                 # ic(records)
                 rec = FeedRecord(
+                    lang=feed_rec.lang,
                     source=feed_rec.source,
                     link=feed_rec.url,
                     title=records.feed.title,
