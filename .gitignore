@@ -1,3 +1,5 @@
+tmp
+src/tmp
 results
 *.json
 .vscode
