@@ -1,3 +1,9 @@
+flair-markup:
+	cat cache/dedupe.jsonl | python src/flair_markup.py > cache/markup.jsonl
+gemtest2:
+	python src/lib/geminiai.py --prompt_file=/Users/kyle/prompts/dottest0.txt
+gemtest:
+	python src/lib/geminiai.py --prompt_file=/Users/kyle/prompts/promNavy.txt --system_prompt_file=/Users/kyle/prompts/sysdot0.txt
 nerd:
 	cat cache/11rec.jsonl | python src/nerd.py
 rmchroma:
@@ -41,6 +47,8 @@ run5:
 	cat cache/art.jsonl | python src/flair_news.py | egrep '^\{' > cache/flair_news.jsonl
 run6:
 	cat cache/flair_news.jsonl | python src/dedupe.py > cache/dedupe.jsonl
+run6init:
+	cat cache/flair_news.jsonl | python src/dedupe_init.py
 run7:
 	cat cache/dedupe.jsonl| python src/vectorize.py
 run8:

@@ -1,3 +1,4 @@
 colorama
 google-generativeai
 pillow
+nltk

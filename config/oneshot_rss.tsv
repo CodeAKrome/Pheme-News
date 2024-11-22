@@ -1,1 +1,11 @@
+# Russia
+en	tass    https://tass.com/rss/v2.xml
+# China
+en	chinamil    http://english.chinamil.com.cn/rss.xml
+# Japan
+en	mainichi    https://mainichi.jp/rss/etc/english_latest.rss
+# Ukraine
+en	induk-ukrain  https://www.independent.co.uk/topic/ukraine/rss
+# US
+en	nyt-world   https://rss.nytimes.com/services/xml/rss/nyt/World.xml
 en	bbc-top http://feeds.bbci.co.uk/news/rss.xml

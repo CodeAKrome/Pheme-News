@@ -9,7 +9,7 @@ import logging
 from bs4 import BeautifulSoup
 import html
 import re
-
+import lxml
 
 from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
@@ -152,7 +152,7 @@ class RSSFeedProcessor:
 
     def paragraph_text(self, doc: str) -> str:
         """Return the text content of paragraph html tags"""
-        soup = BeautifulSoup(doc, "html.parser")
+        soup = BeautifulSoup(doc, "lxml")
         paragraphs = soup.find_all("p")
         result = []
         for p in paragraphs:

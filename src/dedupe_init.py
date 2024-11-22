@@ -58,3 +58,8 @@ for line in sys.stdin:
 
 with open(DUPEFILE, "w") as dfh:
     print(dumps(deadlines), file=dfh)
+
+print("Duplicate lines by source\n=======\n")
+for src in deadlines:
+    print(f"{src}\t{len(deadlines[src])}")
+    
