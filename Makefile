@@ -1,3 +1,4 @@
+allruns: run1pol run2 run3 run4 run5 run6init run6 run8
 flair-markup:
 	cat cache/dedupe.jsonl | python src/flair_markup.py > cache/markup.jsonl
 gemtest2:

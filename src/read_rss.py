@@ -14,7 +14,7 @@ import socket
 # aa aA0 htt
 # language 2 letter code, name, ulr
 VALID_RECORD = re.compile(r"^[a-z][a-z][\s\t]+[a-zA-Z][a-zA-Z0-9\-]*[\s\t]+https?:\/\/[^\t]*$")
-FORMAT_ERROR = "Invalid input format. Should be 2 tab delimited columns: feed name (starting with a letter, then alphanumerics) and feed URL."
+FORMAT_ERROR = "Invalid input format. Should be 3 tab delimited columns: 2 letter language code, feed name (starting with a letter, then alphanumerics) and feed URL."
 DEFAULT_TIMEOUT = 30
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
 
@@ -81,7 +81,7 @@ class ReadRss(BaseException):
     @arrest([ValueError], "Invalid feed entry in input.")
     def validate_feed(self, line) -> FeedRecord:
         if line:
-            if VALID_RECORD.fullmatch(line):
+            if line[0] != '#' and VALID_RECORD.fullmatch(line):
                 lang, source, url = line.split()
                 if not (lang and source and url):
                     raise ValueError(FORMAT_ERROR)
