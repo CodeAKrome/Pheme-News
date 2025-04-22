@@ -11,6 +11,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import urllib.error
 import socket
 
+# aa aA0 htt
+# language 2 letter code, name, ulr
 VALID_RECORD = re.compile(r"^[a-z][a-z][\s\t]+[a-zA-Z][a-zA-Z0-9\-]*[\s\t]+https?:\/\/[^\t]*$")
 FORMAT_ERROR = "Invalid input format. Should be 2 tab delimited columns: feed name (starting with a letter, then alphanumerics) and feed URL."
 DEFAULT_TIMEOUT = 30
