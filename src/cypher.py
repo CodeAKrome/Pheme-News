@@ -8,14 +8,18 @@ from json import loads, dumps, JSONDecodeError
 BIASTHRESHHOLD = 25
 PATTERN = re.compile(r"[^a-zA-Z0-9]")
 
+
 def alphanumeric(text):
     return PATTERN.sub("", text)
+
 
 def alphanumeric_lower(s):
     return "".join(c for c in s if c.isalnum()).lower()
 
+
 def esc_quotes(s):
     return s.replace('"', '\\"')
+
 
 def first_letter(text):
     """Make sure a letter is at beginning otherwise node name is illegal for neo4j"""
@@ -27,26 +31,28 @@ def first_letter(text):
                 return text[i:]
     return ""  # Return empty string if no letters are found
 
+
 source = []
 entity = []
 
 # Bias entities for linking
 for bias in ["positive", "negative", "neutral"]:
     print(f"CREATE ({bias}:Bias)")
-   
+
 for line in sys.stdin:
     line = line.strip()
-    if not line: continue
+    if not line:
+        continue
     try:
         data = loads(line)
     except JSONDecodeError as e:
         sys.stderr.write(f"JSON: {e}\n{line}\n")
         continue
-    if not 'text' in data:
+    if not "text" in data:
         print(line)
         continue
 
-    ner = data['ner']
+    ner = data["ner"]
 
     # see if source exists
     srcname = first_letter(alphanumeric(data["source"]))
@@ -54,18 +60,20 @@ for line in sys.stdin:
         source.append(srcname)
         print(f"CREATE ({srcname}:Source)")
     # Article
-    artid = data['id']
-    print(f"CREATE ({artid}:Article {{title:\"{esc_quotes(data['title'])}\", link:\"{data['link']}\"}})")
+    artid = data["id"]
+    print(
+        f"CREATE ({artid}:Article {{title:\"{esc_quotes(data['title'])}\", link:\"{data['link']}\"}})"
+    )
     # link source and article
     # deal with missing data
-    pubdate = "\"N/A\""
+    pubdate = '"N/A"'
     if "published_parsed" in data:
-        pubdate = data['published_parsed']
+        pubdate = data["published_parsed"]
     else:
         if "published" in data:
-            pubdate = data['published']
+            pubdate = data["published"]
 
-    print(f'CREATE ({srcname})-[:PUBLISHED {{date: {pubdate}}}]->({artid})')
+    print(f"CREATE ({srcname})-[:PUBLISHED {{date: {pubdate}}}]->({artid})")
     # see if entitys exist
     stats = {
         "positive": 0,
@@ -97,11 +105,11 @@ for line in sys.stdin:
             # link article and entity
             stats[span["sentiment"]] += 1
             if span["sentiment"] == "neutral":
-                rel = 'Refs'
+                rel = "Refs"
             if span["sentiment"] == "positive":
-                rel = 'Loves'
+                rel = "Loves"
             if span["sentiment"] == "negative":
-                rel = 'Hates'
+                rel = "Hates"
             print(
                 f"CREATE ({artid})-[:{rel} {{score: {span['score']}, prob: {span['probability']}, sent: '{sentence['sentence']}'}}]->({entname})"
             )
@@ -120,5 +128,4 @@ for line in sys.stdin:
                 bias_dir = "negative"
     print(
         f"CREATE ({artid})-[:IsBiased {{bias: {bias:.2f}, pos: {stats['positive']}, neg: {stats['negative']}, neut: {stats['neutral']}, tot: {tot}}}]->({bias_dir})"
-    )                
-    
+    )

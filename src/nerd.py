@@ -7,7 +7,8 @@ import os
 from litellm import completion
 from time import perf_counter
 import re
-#from groq import Groq
+
+# from groq import Groq
 from functools import cache
 from time import sleep
 from lib.ollamaai import OllamaAI
@@ -20,6 +21,7 @@ from lib.geminiai import GeminiAI
 
 MODEL = "llama3.1:70b"
 
+
 @cache
 def wiki_cache(suspect):
     try:
@@ -28,9 +30,11 @@ def wiki_cache(suspect):
         # Wiki too busy
         sleep(10)
 
+
 @cache
 def wiki_summary_cache(person):
     return wiki.summary(person)
+
 
 @cache
 def summ_people(suspect):
@@ -39,7 +43,7 @@ def summ_people(suspect):
 
     for person in wiki_cache(suspect):
         if True:
-        # if wikipeeps(person):
+            # if wikipeeps(person):
             try:
                 dex[person] = wiki_summary_cache(person)
             except Exception as e:
@@ -47,6 +51,7 @@ def summ_people(suspect):
         else:
             sys.stderr.write(f"Not person: {person}\n")
     return dex
+
 
 @cache
 def nerd(tag, suspect, sentence):
@@ -107,7 +112,9 @@ WORK_OF_ART	name of work of art	Mona Lisa, Star Wars
         sys.stderr.write(f"{suspect} -> {person}\t{ans}\n")
 
         if "yes" in ans:
-            sys.stderr.write(f"\n\n\033[41m\033[91m Match found: {suspect} -> {person}\033[0m\nsummary: {summ}\n\n")
+            sys.stderr.write(
+                f"\n\n\033[41m\033[91m Match found: {suspect} -> {person}\033[0m\nsummary: {summ}\n\n"
+            )
             return person
 
     return None
@@ -120,30 +127,32 @@ def readstd(callback):
         recno += 1
 
         line = line.strip()
-        if not line: continue
+        if not line:
+            continue
         try:
             data = loads(line)
         except JSONDecodeError as e:
             sys.stderr.write(f"JSON: {e}\n{line}\n")
             continue
         # This should mean this is an rss flavored record
-        if not 'ner' in data:
+        if not "ner" in data:
             print(line)
             continue
         callback(data)
 
+
 def procart(data):
-    noproc=["MONEY", "ORDINAL", "PERCENT", "QUANTITY", "TIME", "DATE", "CARDINAL"]
-    ner = data['ner']
+    noproc = ["MONEY", "ORDINAL", "PERCENT", "QUANTITY", "TIME", "DATE", "CARDINAL"]
+    ner = data["ner"]
     art_map = {}
 
     # Pass 1
     examples = {}
     for ent in ner:
-        for span in ent['spans']:
+        for span in ent["spans"]:
             # ORG/name or PERSON/name etc.
             suspect = f"{span['value']}/{span['text']}"
-            sentence = ent['sentence']
+            sentence = ent["sentence"]
             if suspect in examples:
                 examples[suspect] += sentence
             else:
@@ -157,13 +166,14 @@ def procart(data):
         sys.stderr.write(f"\n=>\t{ent['sentence']}\n")
 
         # NER to the D in single sentence
-        for span in ent['spans']:
+        for span in ent["spans"]:
             # ORG/name or PERSON/name etc.
-            tag = span['value']
-            if tag in noproc: continue
+            tag = span["value"]
+            if tag in noproc:
+                continue
             suspect_key = f"{tag}/{span['text']}"
-            suspect = span['text']
-            sentence = ent['sentence']
+            suspect = span["text"]
+            sentence = ent["sentence"]
             res = None
 
             sys.stderr.write(f"\nTRY: {suspect}\n")
@@ -177,14 +187,17 @@ def procart(data):
                 if res:
                     art_map[suspect_key] = entity
 
-                    sys.stderr.write(f"\n\033[41m\033[91m NERD {suspect} -> {res} added {suspect_key} -> {entity} \033[0m\n")
+                    sys.stderr.write(
+                        f"\n\033[41m\033[91m NERD {suspect} -> {res} added {suspect_key} -> {entity} \033[0m\n"
+                    )
 
                     break
             if not res:
                 if suspect and suspect_key in examples:
                     res = nerd(tag, suspect, examples[suspect_key])
 
-            if not res: continue
+            if not res:
+                continue
             # resets every article
             art_map[suspect_key] = res
             art_map[res] = res
@@ -194,9 +207,8 @@ def procart(data):
 
     sys.stderr.write(f"\nTime: {lap:.2f}s\n")
 
-    data['wikimap'] = wikimap
+    data["wikimap"] = wikimap
     print(dumps(data))
-
 
 
 def main(assistant, nerd_map):
@@ -204,14 +216,15 @@ def main(assistant, nerd_map):
 
     for line in sys.stdin:
         line = line.strip()
-        if not line: continue
+        if not line:
+            continue
         try:
             data = loads(line)
         except JSONDecodeError as e:
             sys.stderr.write(f"JSON: {e}\n{line}\n")
             continue
         # This should mean this is an rss flavored record
-        if not 'ner' in data:
+        if not "ner" in data:
             print(line)
             continue
 
@@ -220,7 +233,7 @@ def main(assistant, nerd_map):
         recno += 1
 
         # Have data
-        ner = data['ner']
+        ner = data["ner"]
         wikimap = []
         art_map = {}
 
@@ -228,10 +241,10 @@ def main(assistant, nerd_map):
         # Collect example sentences for PERSONs.
         examples = {}
         for ent in ner:
-            for span in ent['spans']:
-                if span['value'] == "PERSON":
-                    suspect = span['text']
-                    sentence = ent['sentence']
+            for span in ent["spans"]:
+                if span["value"] == "PERSON":
+                    suspect = span["text"]
+                    sentence = ent["sentence"]
                     if suspect in examples:
                         examples[suspect] += sentence
                     else:
@@ -243,10 +256,10 @@ def main(assistant, nerd_map):
             sys.stderr.write(f"\n=>\t{ent['sentence']}\n")
 
             # NER to the D in single sentence
-            for span in ent['spans']:
-                if span['value'] == "PERSON":
-                    suspect = span['text']
-                    sentence = ent['sentence']
+            for span in ent["spans"]:
+                if span["value"] == "PERSON":
+                    suspect = span["text"]
+                    sentence = ent["sentence"]
 
                     res = None
                     sys.stderr.write(f"\nTRY: {suspect}\n")
@@ -258,13 +271,16 @@ def main(assistant, nerd_map):
                                 res = art_map[person]
                         if res:
                             art_map[suspect] = person
-                            sys.stderr.write(f"\n\033[41m\033[91m NERD {suspect} -> {res} added {suspect} -> {person} \033[0m\n")
+                            sys.stderr.write(
+                                f"\n\033[41m\033[91m NERD {suspect} -> {res} added {suspect} -> {person} \033[0m\n"
+                            )
                             break
                     if not res:
                         if suspect and examples[suspect]:
                             res = nerd(suspect, examples[suspect])
 
-                    if not res: continue
+                    if not res:
+                        continue
                     # This will keep mapping, no harm
                     # map found real name to itself.
                     # Persist over data stream. Will keep writing map, is ok.
@@ -279,9 +295,8 @@ def main(assistant, nerd_map):
 
             sys.stderr.write(f"\nTime: {lap:.2f}s\n")
 
-        data['wikimap'] = wikimap
+        data["wikimap"] = wikimap
         print(dumps(data))
-
 
 
 if __name__ == "__main__":
@@ -298,22 +313,22 @@ if __name__ == "__main__":
     assistant_name = "Ollama"
 
     if len(sys.argv) > 2:
-        if sys.argv[2] == 'groq':
+        if sys.argv[2] == "groq":
             assistant = GroqAI(model=model)
             assistant_name = "Groq"
-        if sys.argv[2] == 'gemini':
+        if sys.argv[2] == "gemini":
             assistant = GeminiAI(model=model)
             assistant_name = "Gemini"
 
     if assistant_name == "Ollama":
         assistant = OllamaAI(model=model)
 
-
-    sys.stderr.write(f"\n===\nUsing model: {MODEL} with assistant {assistant_name}\n===\n")
+    sys.stderr.write(
+        f"\n===\nUsing model: {MODEL} with assistant {assistant_name}\n===\n"
+    )
 
     # main(assistant, nerd_map)
     readstd(procart)
-
 
     lap = perf_counter() - run_start_time
     lap = lap / 60

@@ -1,0 +1,64 @@
+
+I'll enhance the previous FastAPI-based solution to save the generated PNG digraph to a file in a mapped img subdirectory. I'll update the Docker Compose configuration to include a volume mapping for the img directory and modify the Python application to save the PNG file to this directory while still returning it in the response. The core functionality (FastAPI, LM-Studio integration, SVO tuple extraction, and digraph generation) remains unchanged.
+
+Changes Made:
+Docker Compose:
+Added a volume mapping to persist the img directory on the host machine.
+Ensured the img directory is created in the container at /app/img.
+Python Application (app.py):
+Modified the create_digraph function to save the PNG to /app/img/digraph_<timestamp>.png (using a timestamp to avoid overwriting).
+Updated the bulk_load endpoint to use the saved file path for FileResponse.
+Ensured the img directory is created if it doesn't exist.
+Other Files:
+The Dockerfile and requirements.txt remain unchanged as no new dependencies or build steps are needed.
+Here are the updated artifacts:
+
+docker-compose.yml
+yaml
+Show inline
+Dockerfile
+dockerfile
+Show inline
+requirements.txt
+plain
+Show inline
+app.py
+python
+Show inline
+Key Improvements:
+Volume Mapping for img Directory:
+Added ./img:/app/img to the volumes section in docker-compose.yml.
+This maps the host's ./img directory to /app/img in the container, ensuring PNG files are persisted on the host.
+Saving PNG to img Directory:
+Updated create_digraph to save the PNG to /app/img/digraph_<timestamp>.png, where <timestamp> is the current date and time (e.g., digraph_20250422_123456.png).
+Used os.makedirs(IMG_DIR, exist_ok=True) to ensure the img directory exists in the container.
+The function now returns the file path instead of a BytesIO buffer.
+FileResponse with Saved File:
+Modified the bulk_load endpoint to use FileResponse with the saved file path.
+Set the response filename to the basename of the saved file (e.g., digraph_20250422_123456.png).
+Timestamped Filenames:
+Added a timestamp to each PNG filename to prevent overwriting previous graphs.
+Format: digraph_YYYYMMDD_HHMMSS.png.
+Usage Instructions:
+Ensure LM-Studio is running externally on port 1234 (accessible via host.docker.internal:1234 on Docker Desktop).
+Create an img directory in your project directory to store the PNG files.
+Save the provided files (docker-compose.yml, Dockerfile, requirements.txt, app.py) in the project directory.
+Run docker-compose up --build to start the service.
+Send a POST request to http://localhost:8000/bulk_load with a JSON payload like:
+json
+
+{
+    "records": [
+        {"text": "The cat chased the mouse."},
+        {"text": "The dog ate the bone."}
+    ]
+}
+The response will be a PNG image (e.g., digraph_20250422_123456.png) downloadable via the browser or client.
+The same PNG file will be saved in the img directory on the host machine (e.g., ./img/digraph_20250422_123456.png).
+Notes:
+The img directory on the host (./img) will be created automatically by Docker if it doesn't exist.
+PNG files are persisted in the img directory, allowing you to access all generated digraphs.
+For Linux users, replace host.docker.internal in docker-compose.yml with the host machine's IP or configure Docker networking appropriately.
+The FastAPI API documentation is available at http://localhost:8000/docs.
+The solution retains the same artifact IDs as the previous response, as it updates the existing application.
+This enhancement ensures that each generated digraph is both returned in the response and saved to the img subdirectory for later access.

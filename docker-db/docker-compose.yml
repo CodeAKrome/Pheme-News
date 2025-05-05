@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+  web:
+    build: .
+    ports:
+      - "1337:1337"
+    depends_on:
+      - mongodb
+      - chroma
+    volumes:
+      - ./app:/app
+    networks:
+      - app-network
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - app-network
+
+  chroma:
+    image: chromadb/chroma:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongo_data:
+  chroma_data:

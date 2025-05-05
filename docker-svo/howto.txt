@@ -1,0 +1,42 @@
+Key Improvements and Changes:
+FastAPI Instead of Flask:
+Replaced Flask with FastAPI for asynchronous handling and automatic OpenAPI documentation.
+Updated the endpoint to use @app.post("/bulk_load") with FastAPI's dependency injection.
+Used FastAPI's FileResponse to return the PNG image.
+Pydantic Model for Input Validation:
+Added Record and BulkInput Pydantic models to enforce that each JSON record has a text field.
+Input must be a JSON array of objects, each with a text string field (e.g., [{"text": "The cat chased the mouse"}, {"text": "The dog ate the bone"}]).
+FastAPI automatically validates the input and returns appropriate error messages if the schema is invalid.
+Docker Compose Updates:
+Changed the port to 8000 (common for FastAPI with Uvicorn).
+Updated the command in the Dockerfile to run uvicorn instead of python app.py.
+Requirements Updates:
+Replaced flask with fastapi and uvicorn.
+Added pydantic for input validation.
+Kept requests, networkx, and matplotlib for LM-Studio integration and graph generation.
+Temporary File for FileResponse:
+FastAPI's FileResponse requires a file path, so the PNG buffer is saved to a temporary file.
+The temporary file is automatically cleaned up after the response is sent.
+Error Handling:
+Used FastAPI's HTTPException for error responses with appropriate status codes.
+Maintained robust error handling for LM-Studio communication and graph generation.
+Usage Instructions:
+Ensure LM-Studio is running externally on port 1234 (accessible via host.docker.internal:1234 on Docker Desktop).
+Save the provided files (docker-compose.yml, Dockerfile, requirements.txt, app.py) in a project directory.
+Run docker-compose up --build to start the service.
+Send a POST request to http://localhost:8000/bulk_load with a JSON payload like:
+json
+
+{
+    "records": [
+        {"text": "The cat chased the mouse."},
+        {"text": "The dog ate the bone."}
+    ]
+}
+The response will be a PNG image (digraph.png) showing the directed graph of subject-verb-object relationships.
+Notes:
+The LM_STUDIO_URL environment variable defaults to http://localhost:1234/v1 if not set.
+For Linux users, replace host.docker.internal with the host machine's IP or configure Docker networking appropriately.
+The generated digraph visualizes subjects and objects as nodes, with edges labeled by verbs, using NetworkX and Matplotlib.
+FastAPI provides automatic API documentation at http://localhost:8000/docs.
+This solution maintains the same artifact IDs as the previous response where applicable, as it updates the existing application rather than creating a new one.

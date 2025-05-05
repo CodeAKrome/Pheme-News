@@ -1,0 +1,6 @@
+fastapi==0.115.0
+uvicorn==0.30.6
+motor==3.5.1
+pydantic==2.9.2
+chromadb==0.5.5
+sentence-transformers==3.1.1

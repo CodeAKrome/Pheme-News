@@ -36,7 +36,8 @@ class FlairSentiment:
                         sentiment = self.tsc.infer_from_text(l, m, r)
                         # Skip unkown labels, only consider known labels as they cause blank nodes
                         for label in span.labels:
-                            if label.value == "<unk>": continue
+                            if label.value == "<unk>":
+                                continue
                             val = label.value
                             spans.append(
                                 {

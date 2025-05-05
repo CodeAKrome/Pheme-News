@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - LM_STUDIO_URL=http://host.docker.internal:1234/v1
+    volumes:
+      - .:/app
+      - ./img:/app/img
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

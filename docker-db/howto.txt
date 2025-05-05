@@ -1,0 +1,109 @@
+Artifacts
+1. Main FastAPI Application (main.py)
+
+Updated to include the new vector search endpoint.
+
+main.py
+python
+Show inline
+2. Database Manager (db.py)
+
+Updated to manage Chroma alongside MongoDB, including embedding generation and vector search.
+
+db.py
+python
+Show inline
+3. Pydantic Models (models.py)
+
+Updated to include a model for the vector search query.
+
+models.py
+python
+Show inline
+4. Dockerfile
+
+Updated to include additional dependencies for Chroma and Sentence Transformers.
+
+Dockerfile
+plain
+Show inline
+5. Docker Compose Configuration (docker-compose.yml)
+
+Updated to include a Chroma service.
+
+docker-compose.yml
+yaml
+Show inline
+6. Requirements File (requirements.txt)
+
+Updated with Chroma and Sentence Transformers dependencies.
+
+requirements.txt
+plain
+Show inline
+How It Works
+Setup:
+Docker Compose starts three services: web (FastAPI), mongodb (MongoDB), and chroma (Chroma DB).
+FastAPI connects to MongoDB at mongodb://mongodb:27017 and Chroma at http://chroma:8000.
+The app listens on port 1337.
+Uploading Records (POST /records/):
+Accepts a JSONL string (e.g., {"name": "John", "age": 30}\n{"name": "Jane", "age": 25}).
+Stores raw records in MongoDB's records collection.
+Converts each JSON record to a text string (e.g., name:John age:30) for embedding.
+Adds embeddings to Chroma with the MongoDB _id as the Chroma document ID.
+Field-Based Search (GET /records/search/):
+Unchanged from the previous solution.
+Searches MongoDB using exact field matches (e.g., ?name=John&age=30).
+Vector Search (POST /records/vector-search/):
+Accepts a JSON body with query_text (e.g., name:John age:30) and optional top_k (default 5).
+Queries Chroma for the top top_k similar records, returning their IDs (MongoDB _id strings).
+Fetches the corresponding records from MongoDB by _id and returns them.
+Web Interface:
+Access http://localhost:1337/docs for Swagger UI to test all endpoints.
+Example Usage
+Start the services:
+bash
+
+docker-compose up -d
+Upload records:
+bash
+
+curl -X POST "http://localhost:1337/records/" -H "Content-Type: text/plain" --data $'{"name": "John", "age": 30}\n{"name": "Jane", "age": 25}\n{"name": "John", "city": "New York"}'
+Response:
+json
+
+[
+    {"id": "671a9b1f2c3d4e5f67890123", "data": {"name": "John", "age": 30}},
+    {"id": "671a9b1f2c3d4e5f67890124", "data": {"name": "Jane", "age": 25}},
+    {"id": "671a9b1f2c3d4e5f67890125", "data": {"name": "John", "city": "New York"}}
+]
+Field-based search:
+bash
+
+curl "http://localhost:1337/records/search/?name=John"
+Response:
+json
+
+[
+    {"id": "671a9b1f2c3d4e5f67890123", "data": {"name": "John", "age": 30}},
+    {"id": "671a9b1f2c3d4e5f67890125", "data": {"name": "John", "city": "New York"}}
+]
+Vector search:
+bash
+
+curl -X POST "http://localhost:1337/records/vector-search/" -H "Content-Type: application/json" -d '{"query_text": "name:John", "top_k": 2}'
+Response (returns records similar to name:John):
+json
+
+[
+    {"id": "671a9b1f2c3d4e5f67890123", "data": {"name": "John", "age": 30}},
+    {"id": "671a9b1f2c3d4e5f67890125", "data": {"name": "John", "city": "New York"}}
+]
+Notes
+Embedding Model: Uses all-MiniLM-L6-v2 from Sentence Transformers for lightweight, efficient embeddings. You can swap to other models (e.g., paraphrase-MiniLM-L12-v2) by updating db.py.
+Chroma Persistence: The chroma_data volume ensures embeddings persist across container restarts.
+JSON to Text: The _json_to_text method converts JSON to a simple string (e.g., name:John age:30). You can customize this for more sophisticated text representations.
+Performance: Chroma is lightweight and suitable for small to medium datasets. For large-scale production, consider scaling Chroma or using a managed vector DB.
+Security: Add authentication and environment variables for production use.
+References: Inspired by Chroma documentation and FastAPI-MongoDB integration guides.
+This solution enhances the previous version by adding vector search capabilities while maintaining the existing functionality. Let me know if you need further refinements or additional features!

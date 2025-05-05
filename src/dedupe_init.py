@@ -12,25 +12,30 @@ No text field -> passthrough.
 DUPEFILE = "cache/dupes.json"
 PATTERN = re.compile(r"[^a-zA-Z0-9]")
 
+
 def alphanumeric(text):
     return PATTERN.sub("", text)
 
-deadlines = defaultdict(lambda:[]) # This will be cached to use after the first article time through
-last_src = False    
+
+deadlines = defaultdict(
+    lambda: []
+)  # This will be cached to use after the first article time through
+last_src = False
 
 for line in sys.stdin:
     line = line.strip()
-    if not line: continue
+    if not line:
+        continue
     try:
         data = loads(line)
     except JSONDecodeError as e:
         sys.stderr.write(f"JSON: {e}\n{line}\n")
         continue
     # This should mean this is an rss flavored record
-    if not 'ner' in data:
+    if not "ner" in data:
         continue
 
-    src = data['source']
+    src = data["source"]
     if last_src:
         if src != last_src:
             init = True
@@ -39,10 +44,10 @@ for line in sys.stdin:
     else:
         last_src = src
         dedupe = []
-        init = True # Flag to determine whether we are on the first article or not.
-    
-    for sentence in data['ner']:
-        sent = sentence['sentence']
+        init = True  # Flag to determine whether we are on the first article or not.
+
+    for sentence in data["ner"]:
+        sent = sentence["sentence"]
         alpha_sent = alphanumeric(sent)
         if init:
             dedupe.append(alpha_sent)
@@ -62,4 +67,3 @@ with open(DUPEFILE, "w") as dfh:
 print("Duplicate lines by source\n=======\n")
 for src in deadlines:
     print(f"{src}\t{len(deadlines[src])}")
-    
