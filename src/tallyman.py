@@ -13,19 +13,31 @@ CACHEFILE = "cache/articles.json"
 id = 0
 fc = file_cache(CACHEFILE)
 
-try:
-    count_fh = open(COUNTERFILE, "r")
-    idline = count_fh.read()
-    id = loads(idline)["id"]
-    count_fh.close()
-except FileNotFoundError as e:
-    count_fh = open(COUNTERFILE, "w")
-    count_fh.write(dumps({"id": 0}))
-except ValueError as e:
-    print(f"Invalid JSON: {idline}", file=sys.stderr)
-    exit(1)
-count_fh = open(COUNTERFILE, "w")
+# try:
+#     count_fh = open(COUNTERFILE, "r")
+#     idline = count_fh.read()
+#     id = loads(idline)["id"]
+#     count_fh.close()
+# except ValueError as e:
+#     print(f"Invalid JSON: {idline}", file=sys.stderr)
+#     exit(1)
 
+# Check if COUNTERFILE exists, if not initialize id to 0
+try:
+    with open(COUNTERFILE, "r") as count_fh:
+        idline = count_fh.read()
+        try:
+            id = loads(idline)["id"]
+        except ValueError as e:
+            print(f"Invalid JSON: {idline}", file=sys.stderr)
+            exit(1)
+except FileNotFoundError:
+    pass
+
+count_fh = open(COUNTERFILE, "w")
+if not id:
+    id = 0
+    
 for line in sys.stdin:
     line = line.strip()
     if not line:

@@ -24,10 +24,10 @@ run4:
 	cat cache/read_article.jsonl | grep '"art"' > cache/art.jsonl
 run5:
 	cat cache/art.jsonl | python src/flair_news.py | egrep '^\{' > cache/flair_news.jsonl
-run6:
-	cat cache/flair_news.jsonl | python src/dedupe.py >> cache/dedupe.jsonl
 run6init:
 	cat cache/flair_news.jsonl | python src/dedupe_init.py
+run6:
+	cat cache/flair_news.jsonl | python src/dedupe.py >> cache/dedupe.jsonl
 run7:
 	cat cache/dedupe.jsonl| python src/vectorize.py
 run8:
