@@ -27,7 +27,7 @@ run5:
 run6init:
 	cat cache/flair_news.jsonl | python src/dedupe_init.py
 run6:
-	cat cache/flair_news.jsonl | python src/dedupe.py >> cache/dedupe.jsonl
+	cat cache/flair_news.jsonl | python src/dedupe.py > cache/dedupe_`date +%m-%d_%H:%M`.jsonl
 run7:
 	cat cache/dedupe.jsonl| python src/vectorize.py
 run8:
