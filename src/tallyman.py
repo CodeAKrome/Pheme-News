@@ -29,7 +29,7 @@ try:
         try:
             id = loads(idline)["id"]
         except ValueError as e:
-            print(f"Invalid JSON: {idline}", file=sys.stderr)
+            print(f"Invalid JSON in {COUNTERFILE}: count from file: {idline}", file=sys.stderr)
             exit(1)
 except FileNotFoundError:
     pass
