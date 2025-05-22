@@ -1,6 +1,6 @@
 include tools.mk
 clean: clearcache
-	rm cache/dedupe.jsonl
+	rm/counter.json
 runpipe: tbeg pipe tend
 pipe:	
 	cat config/political_feeds.tsv | python src/read_rss.py | python src/tallyman.py | python src/read_article.py | grep '"art"' | python src/flair_news.py | egrep '^\{' > tmp/test.jsonl
