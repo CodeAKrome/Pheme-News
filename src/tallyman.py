@@ -29,8 +29,11 @@ try:
         try:
             id = loads(idline)["id"]
         except ValueError as e:
-            print(f"Invalid JSON in {COUNTERFILE}: count from file: {idline}", file=sys.stderr)
-            exit(1)
+            id = 0
+            #            count_fh.close()
+#            id = 0
+#            print(f"Invalid JSON in {COUNTERFILE}: count from file: {idline}", file=sys.stderr)
+#            exit(1)
 except FileNotFoundError:
     pass
 
@@ -40,6 +43,9 @@ if not id:
     
 for line in sys.stdin:
     line = line.strip()
+
+    print(f"> {line}")
+    
     if not line:
         continue
     data = loads(line)

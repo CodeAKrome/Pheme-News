@@ -3,35 +3,62 @@ clean: clearcache
 	rm/counter.json
 runpipe: tbeg pipe tend
 pipe:	
-	cat config/political_feeds.tsv | python src/read_rss.py | python src/tallyman.py | python src/read_article.py | grep '"art"' | python src/flair_news.py | egrep '^\{' > tmp/test.jsonl
+	@cat config/political_feeds.tsv | python src/read_rss.py | python src/tallyman.py | python src/read_article.py | grep '"art"' | python src/flair_news.py | egrep '^\{' > tmp/test.jsonl
 pipe0:	
-	cat config/political_feeds.tsv | python src/read_rss.py | python src/tallyman.py | python src/read_article.py | grep '"art"' | python src/flair_news.py | egrep '^\{' | python src/dedupe_init.py | python src/dedupe.py >> cache/dedupe.jsonl
-allruns: tbeg run1 run2 run3 run4 run5 run6init run6 tend
+	@cat config/political_feeds.tsv | python src/read_rss.py | python src/tallyman.py | python src/read_article.py | grep '"art"' | python src/flair_news.py | egrep '^\{' | python src/dedupe_init.py | python src/dedupe.py >> cache/dedupe.jsonl
+allruns: tbeg run1 run2 run3 run4 run5 run6init run6 dedupe entitydict idtitlepubsumm top10 top10slice llmtest tend
 tbeg:
-	 echo "BEG" > cache/runtime.txt ; date +"%m-%d %H:%M:%S" >> cache/runtime.txt
+	@echo "BEG" > cache/runtime.txt ; date +"%m-%d %H:%M:%S" >> cache/runtime.txt
 tend:
-	 echo "END" >> cache/runtime.txt ; date +"%m-%d %H:%M:%S" >> cache/runtime.txt
+	@echo "END" >> cache/runtime.txt ; date +"%m-%d %H:%M:%S" >> cache/runtime.txt
 clearcache:
 	rm cache/articles.json
 	rm cache/counter.json
 run1:
-	cat config/political_feeds.tsv | python src/read_rss.py > cache/read_rss.jsonl
+	@cat config/political_feeds.tsv | python src/read_rss.py > cache/read_rss.jsonl
 run2:
-	cat cache/read_rss.jsonl | python src/tallyman.py > cache/tallyman.jsonl
+	@cat cache/read_rss.jsonl | python src/dedupe_titles.py | python src/tallyman.py > cache/tallyman.jsonl
 run3:
-	cat cache/tallyman.jsonl | python src/read_article.py > cache/read_article.jsonl
+	@cat cache/tallyman.jsonl | python src/read_article.py > cache/read_article.jsonl
 run4:
-	cat cache/read_article.jsonl | grep '"art"' > cache/art.jsonl
+	@cat cache/read_article.jsonl | grep '"art"' > cache/art.jsonl
 run5:
-	cat cache/art.jsonl | python src/flair_news.py | egrep '^\{' > cache/flair_news.jsonl
+	@cat cache/art.jsonl | python src/flair_news.py | egrep '^\{' > cache/flair_news.jsonl
 run6init:
-	cat cache/flair_news.jsonl | python src/dedupe_init.py
+	@cat cache/flair_news.jsonl | python src/dedupe_init.py
 run6:
-	cat cache/flair_news.jsonl | python src/dedupe.py > cache/dedupe_`date +%m-%d_%H:%M`.jsonl
+	@cat cache/flair_news.jsonl | python src/dedupe.py > cache/dedupe_`date +%m-%d_%H:%M`.jsonl
 run7:
-	cat cache/dedupe.jsonl| python src/vectorize.py
+	@cat cache/dedupe.jsonl| python src/vectorize.py
 run8:
-	cat cache/dedupe.jsonl | python src/cypher.py > cache/cypher.cypher
+	@cat cache/dedupe.jsonl | python src/sentimentaly.py > cache/dedupe_sentimentaly.cypher
+run9:
+	@cat cache/dedupe.jsonl | python src/cypher.py > cache/cypher.cypher
+dedupe:
+	@cat `find cache -type f -name 'dedupe_*.jsonl' -newermt '1 day ago'` > cache/dedupe.jsonl
+entitydict:
+	@cat cache/dedupe.jsonl | python src/jsonl2entitydict.py > cache/dedupe_entity_dictionary.tsv
+idtitlesumm:
+	@jq -r '[.id,.title,.summary]|join("\t")' cache/dedupe.jsonl > tmp/dedupe_idtitlesumm.tsv
+idtitlepubsumm:
+	@jq -r '[.id,.title,.published,.summary]|join("\t")' cache/dedupe.jsonl > tmp/dedupe_idtitlepubsumm.tsv
+top10:
+	@cat cache/dedupe_entity_dictionary.tsv | grep -E '(PERSON|ORG|EVENT|FAC|GPE|NORP)' | head -n 10 > tmp/dedupe_top10.tsv
+top10slice:
+	@cut -f 4 tmp/dedupe_top10.tsv | perl -ne 's/\n//g;print;' > tmp/dedupe_top10_ids.txt
+	@cd cache; ./slice.sh top10 `cat ../tmp/dedupe_top10_ids.txt`
+	@cut -f 1,2 tmp/dedupe_top10.tsv > tmp/top10_filtent.tsv
+	@cat prompt/gemtest.txt tmp/top10_filtent.tsv prompt/attachment.txt tmp/top10_idtitle.tsv > tmp/top10_initial_prompt.txt
+#	@cat tmp/top10_initial_prompt.txt | src/gemtest.py > tmp/top10_aiout.md
+	@cat tmp/top10_aiout.md | src/relink.py tmp/dedupe_idlinksrc.tsv | src/gatherids.pl > tmp/top10.md
+	@cp tmp/top10_initial_prompt.txt src/prompt.txt
+llmtest:
+	@rm -f src/output/*
+	@src/geminiai_listmodels.py | src/geminimodelfilter.pl > src/gemtest_runall.sh
+	@cd src; ./gemtest_runall.sh
+	@find src/output -type f -size +0c -print | ./testrelink.pl > testrelink.sh
+	@./testrelink.sh
+	@ls -1 src/output/*perc* | src/maxgood.py > tmp/maxgood_llm.txt
 dev: install
 	pip install -r requirements-dev.txt
 install:

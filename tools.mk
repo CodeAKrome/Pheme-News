@@ -1,3 +1,28 @@
+titles:
+	@src/titles.sh
+#titles:
+#	cat cache/dedupe.jsonl|jq -r '[.id, .title] | join("\t")' | sort -k 2 | uniq | awk '!seen[$2]++'
+links:
+	@cat cache/dedupe.jsonl|jq -r '[.id, .title, .link] | join("\t")'
+jsonlinks:
+	@cat cache/dedupe.jsonl|jq -r '[.id, .title, .link]'
+entities:
+	@jq -r '.ner[] | .spans[] | [.text, .value] | @tsv' cache/dedupe.jsonl | sort | uniq | sort -t $'\t' -k 2 > cache/entities.tsv
+filterentities:
+	@grep -E '(PERSON|ORG|DATE|EVENT|LOC|FAC|GPE|NORP)' cache/entities.tsv > cache/entities_filter.tsv
+bytypeentities:
+	@sort -k 2 cache/entities_filter.tsv > cache/entities_filter_bytype.tsv
+orentities:
+	@cat cache/dedupe.jsonl | jq '.ner[] | select(.spans[]?.text as $text | $text == "Abdullah" or $text == "Africa")'
+andentities:
+	@jq '.ner[] | select(.spans as $spans | any($spans[]; .text == "Adesina") and any($spans[]; .text == "Africa"))' cache/dedupe.jsonl
+# Experimental
+tsv2html:
+	cat tmp/0528links.tsv | python src/tsv_idtitlelink2html.py > tmp/0528links.html
+html2pdf:
+	chrome --headless --disable-gpu --print-to-pdf="tmp/0527idtitlelink.pdf" "file:///Users/kyle/hub/Pheme-News/tmp/0527idtitlelink.html"
+ollamatest:
+	python src/lib/ollamaai.py 'llama3.1:8b' 3000 prompt="Capital of Spain"
 gpechinavietnam:
 	jq -n '[inputs | . as $root | .ner[].spans[] | select(.value? == "GPE" and (.text? | IN("China", "Vietnam") | . == true)) | {text: .text, value: .value, source: $root.source, id: $root.id}]' cache/dedupe.jsonl
 workschinavietname:
@@ -14,8 +39,6 @@ gpe:
 	jq -n '[inputs | .ner[].spans[] | select(.value == "GPE") | .text]' cache/dedupe.jsonl
 #entities:
 #	jq -n 'inputs | . as $root | [.ner[].spans[] | {text, value, source: $root.source, id: $root.id}]' cache/dedupe.jsonl
-titles:
-	cat cache/dedupe.jsonl|jq -r '[.id, .title] | join("\t")'
 flair-markup:
 	cat cache/dedupe.jsonl | python src/flair_markup.py > cache/markup.jsonl
 gemtest2:
@@ -26,10 +49,6 @@ nerd:
 	cat cache/11rec.jsonl | python src/nerd.py
 rmchroma:
 	rm -Rf chroma/*
-entities:
-	jq -r '.id as $id | .ner[] | .spans[] | [$id, .text, .value, .sentiment] | @tsv' cache/dedupe.jsonl > cache/entities.tsv
-entities2:
-	jq -r '.ner[] | .spans[] | [.text, .value] | @tsv' cache/dedupe.jsonl | sort | uniq > cache/entities2.tsv
 grootconn:
 	cypher-shell -u neo4j -p $NEO4J_PASS -a neo4j://groot:7687
 neo4jmac:

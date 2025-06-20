@@ -1,7 +1,10 @@
+#!/usr/bin/env python3
+
 from json import loads, JSONDecodeError
-from lib.flair_sentiment import FlairSentiment
+#from lib.flair_sentiment import FlairSentiment
 import sys
 import re
+from collections import defaultdict
 
 # CREATE (JoelS:Person {name:'Joel Silver', born:1952})
 # CREATE
@@ -10,6 +13,18 @@ import re
 # (Laurence)-[:ACTED_IN {roles:['Morpheus']}]->(TheMatrix),
 PATTERN = re.compile(r"[^a-zA-Z0-9]")
 
+# Remove junk words spaces then truncate for use as label
+def make_label(text):
+    # Define junk words to remove (add more as needed)
+    junk_words = r'\b(the|an|a|and|or|but|in|on|at|to|for|of|with|by)\b'
+    
+    # Remove junk words (case-insensitive), multiple spaces, and non-alphanumeric chars
+    cleaned = re.sub(junk_words, '', text, flags=re.IGNORECASE)
+    cleaned = re.sub(r'[^a-zA-Z0-9]', '', cleaned)
+    
+    # Remove all spaces and truncate to 32 characters
+    cleaned = cleaned.replace(' ', '')[:32]
+    return cleaned
 
 def alphanumeric0(s):
     return "".join(c for c in s if c.isalnum())
@@ -42,30 +57,48 @@ def main():
     source = []
     entity = []
     id = 0
-    sentiment_analyzer = FlairSentiment()
+
+    #sentiment_analyzer = FlairSentiment()
+
     # Bias entities for linking
     for bias in ["positive", "negative", "neutral"]:
-        print(f"CREATE ({bias}:Bias)")
+        print(f"CREATE ({bias}:Bias " + "{val: \"" + bias + "\"})")
 
     dedupe = {}
     dedupe_init = True
 
-    for line in sys.stdin:
+    for lno, line in enumerate(sys.stdin):
         record = line.strip()
         if record:
             try:
                 data = loads(record)
             except JSONDecodeError as e:
                 sys.stderr.write(f"Error parsing JSON: {e}\n")
-            ner = sentiment_analyzer.process_text(data["text"])
+                continue
+
+            print(f"{lno}", file=sys.stderr)
+            
+            ner = data.get("ner", [])
+
+#            ner = sentiment_analyzer.process_text(data["text"])
+
             # see if source exists
             srcname = first_letter(alphanumeric(data["source"]))
             if srcname not in source:
                 source.append(srcname)
-                print(f"CREATE ({srcname}:Source)")
+                val = "{val: \"" + srcname + "\"}"
+                print(f"CREATE ({srcname}:Source {val})")
             # article
-            artid = f"Art{id}"
-            print(f"CREATE ({artid}:Article {{title:\"{esc_quotes(data['title'])}\"}})")
+            eq_title = esc_quotes(data["title"])
+            #artid = f"Art{id}"
+            artid = f"{make_label(eq_title)}"
+
+
+            # KEG
+            #print(f"CREATE ({artid}:Article {{title:\"{eq_title}\", id: {id}}})")
+            buf = []
+
+
             # link source and article
             # deal with missing data
             pubdate = "\"N/A\""
@@ -75,7 +108,11 @@ def main():
                 if "published" in data:
                     pubdate = data['published']
 
-            print(f'CREATE ({srcname})-[:PUBLISHED {{date: {pubdate}}}]->({artid})')
+
+            #print(f'CREATE ({srcname})-[:PUBLISHED {{date: {pubdate}}}]->({artid})')
+            buf.append(f'CREATE ({srcname})-[:PUBLISHED {{date: {pubdate}}}]->({artid})')
+
+            
             # see if entitys exist
             stats = {
                 "positive": 0,
@@ -83,6 +120,13 @@ def main():
                 "neutral": 0,
             }
 
+            # Limit to 1 link per entity per article
+            # ref_entity = []
+            # ref_neg = []
+            # ref_pos = []
+
+            refmap = defaultdict(lambda: defaultdict(int))
+            
             dupe_count = 0
             for sentence in ner:
                 # Get rid of duplicate lines by seeing if current sentence matches ones previously seen
@@ -92,7 +136,7 @@ def main():
                 else:
                     if alpha_sent in dedupe:
                         dupe_count += 1
-                        print(f"DROP\t{sentence["sentence"]}", file=sys.stderr)
+                        print(f"DROP\t{sentence['sentence']}", file=sys.stderr)
                         continue
                     
                 print(
@@ -101,7 +145,11 @@ def main():
                 )
 
                 # stats[sentence["tag"]] += 1
+       
+                # create sentence nodes
 
+                
+                # iterate through named entities
                 for span in sentence["spans"]:
                     ent = esc_quotes(span["text"])
                     entname = first_letter(alphanumeric(ent))
@@ -123,14 +171,44 @@ def main():
                         print(
                             f"CREATE ({artid})-[:REFS {{score: '{span['score']}', prob: '{span['probability']}'}}]->({entname})"
                         )
+
+                        refmap[entname]['nREFS'] += 1
+                        
+                        # if entname not in ref_entity:
+                        #     ref_entity.append(entname)
+                        #     buf.append(
+                        #         f"CREATE ({artid})-[:REFS {{score: '{span['score']}', prob: '{span['probability']}'}}]->({entname})"
+                        #     )
+                        
+                        
                     if span["sentiment"] == "positive":
                         print(
                             f"CREATE ({artid})-[:LOVES {{score: '{span['score']}', prob: '{span['probability']}'}}]->({entname})"
                         )
+
+                        refmap[entname]['nLOVES'] += 1
+                        
+                        # if entname not in ref_pos:
+                        #     ref_pos.append(entname)                        
+                        #     buf.append(
+                        #         f"CREATE ({artid})-[:LOVES {{score: '{span['score']}', prob: '{span['probability']}'}}]->({entname})"
+                        #     )
+                        
+                        
                     if span["sentiment"] == "negative":
                         print(
                             f"CREATE ({artid})-[:HATES {{score: '{span['score']}', prob: '{span['probability']}'}}]->({entname})"
                         )
+
+                        refmap[entname]['nHATES'] += 1
+                        
+                        # if entname not in ref_neg:
+                        #     ref_neg.append(entname)                        
+                        #     buf.append(
+                        #         f"CREATE ({artid})-[:HATES {{score: '{span['score']}', prob: '{span['probability']}'}}]->({entname})"
+                        #     )
+                        
+                        
             # Finished with sentences
             # dedupe should be full now.
             if dedupe_init:
@@ -152,10 +230,21 @@ def main():
                         bias_dir = "positive"
                     if stats["negative"] - stats["positive"] > 0:
                         bias_dir = "negative"
+            #            print(f"{dir(stats)}", file=sys.stderr)
+            print(
+                f"CREATE ({artid}:Article {{title:\"{eq_title}\", id: {id}, bias: {bias:.2f}, pos: {stats['positive']}, neg: {stats['negative']}, neut: {stats['neutral']}, tot: {tot}, bias_dir: \"{bias_dir}\"}})"
+            )
+
+            print("\n".join(buf))
+
+            for entname, entstats in refmap.items():
+                for key, val in entstats.items():
+                    print(f"CREATE ({artid})-[:{key} {{ count: '{val}'}}]->({entname})")
+
             print(
                 f"CREATE ({artid})-[:BIAS {{bias: {bias:.2f}, pos: {stats['positive']}, neg: {stats['negative']}, neut: {stats['neutral']}, tot: {tot}}}]->({bias_dir})"
             )                
-            #            print(f"{dir(stats)}", file=sys.stderr)
+
             id += 1
 
 
