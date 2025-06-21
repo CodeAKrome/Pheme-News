@@ -8,6 +8,7 @@ import os
 # This script reads JSON files from standard input, looking for the highest 'good' value.
 # It then prints the filename with the highest 'good' value and copies a related markdown file
 # to a temporary location.  
+
 cwd = os.getcwd()
 if cwd.endswith('/'):
     cwd = cwd[:-1]
@@ -40,8 +41,10 @@ def find_highest_good_file():
         best_file = best_file.split('_')[0]
         md = f"{best_file}_relink.md"
         print(md, file=sys.stdout)
-        absolute_path = os.path.join(cwd, '../tmp/top10.md')
-        cmd = f"cp {md} {absolute_path}"
+        absolute_path = os.path.join(cwd, 'tmp/top10.md')
+        # cmd = f"cp {md} {absolute_path}"
+        cmd = f"cat {md} | src/no_mthead.pl | src/gatherids.pl > {absolute_path}"
+        print(cmd, file=sys.stderr)
         result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
         sys.exit(result.returncode)
     else:
