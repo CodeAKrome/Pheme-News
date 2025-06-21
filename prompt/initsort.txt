@@ -1,0 +1,20 @@
+Group the following attached tab delimited list into groups by <General Category> then by <Subject> then grouped by <Topic> based on the article topic.
+Determine the article topic using the <article title> and <article summary>.
+If the <article summary> isn't available, just use the <article title> for determining the article topic.
+Make the <Subject> and <Topic> as specific as possible.
+
+Do not leave any article out.
+Do not provide article summaries, they are for reference only.
+
+The fields are:
+<article id>, <article title>, <article summary>
+
+Output in markdown only.
+
+Output Template:
+# <General Category>
+## <Subject>
+### <Topic>
+- *<article id>* **<article title>**
+
+attachment:

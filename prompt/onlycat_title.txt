@@ -1,0 +1,22 @@
+You are an expert at news analysis.
+
+Group the following jsonl encoded news <article title> data in the <Attachment> into groups by <Topic> based on the article topic.
+Determine the article <Topic> using the <article title>
+Make the <Topic> as specific as possible.
+
+Do not leave any article out.
+
+The <Attachment> fields are:
+<article id>,<article title>
+
+Output in markdown only.
+
+Output Template:
+# <Topic a>
+- *<article id a-1>* <article title a-1>
+- *<article id a-2>* <article title a-2>
+# <Topic b>
+- *<article id b-1>* <article title b-1>
+- *<article id b-2>* <article title b-2>
+
+Attachment:

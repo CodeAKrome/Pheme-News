@@ -50,7 +50,7 @@ top10slice:
 	@cut -f 1,2 tmp/dedupe_top10.tsv > tmp/top10_filtent.tsv
 	@cat prompt/gemtest.txt tmp/top10_filtent.tsv prompt/attachment.txt tmp/top10_idtitle.tsv > tmp/top10_initial_prompt.txt
 #	@cat tmp/top10_initial_prompt.txt | src/gemtest.py > tmp/top10_aiout.md
-	@cat tmp/top10_aiout.md | src/relink.py tmp/dedupe_idlinksrc.tsv | src/gatherids.pl > tmp/top10.md
+	@cat tmp/top10_aiout.md | src/relink.py tmp/dedupe_idlinksrc.tsv top10 | src/gatherids.pl > tmp/top10.md
 	@cp tmp/top10_initial_prompt.txt src/prompt.txt
 llmtest:
 	@rm -f src/output/*
@@ -60,6 +60,10 @@ llmtest:
 	@./testrelink.sh
 	@ls -1 src/output/*perc* | src/maxgood.py > tmp/maxgood_llm.txt
 dev: install
-	pip install -r requirements-dev.txt
+	@pip install -r requirements-dev.txt
 install:
-	pip install -r requirements.txt
+	@pip install -r requirements.txt
+cleanmp3:
+	@rm mp3/*.mp3
+	@rm mp3/*.txt
+	@rm mp3/*.jsonl
