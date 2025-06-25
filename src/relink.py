@@ -10,7 +10,7 @@ dex = {}
 with open(id2link, "r") as f:
     for line in f:
         line = line.strip()
-        id, link, src = line.split("\t")
+        id, link, src, bval, bias = line.split("\t")
         id = int(id)
         link = link.strip()
         src = src.strip()
@@ -68,7 +68,7 @@ for line in sys.stdin:
         #     print("\n```\n" + ','.join(buf) + "\n```\n")
         #     buf = []
         good += 1
-        print(f"- *{id}* [{m.group(2)}]({link}) *{src}*")
+        print(f"- *{id}* [{m.group(2)}]({link}) *{src}* **{bias[:3]} {bval}**")
     else:
         print(line)
 if tot:        

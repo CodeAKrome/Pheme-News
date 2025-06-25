@@ -23,6 +23,13 @@ class FlairSentiment:
         self.ner_tagger.predict(sentences)
         #        self.linker.predict(sentences)
 
+        stats = {
+            "positive": 0,
+            "negative": 0,
+            "neutral": 0,
+        }
+       #        for sentence in sentences:
+
         output = []
         for sentence in sentences:
             if sentence:
@@ -39,6 +46,7 @@ class FlairSentiment:
                             if label.value == "<unk>":
                                 continue
                             val = label.value
+                            stats[sentiment[0]["class_label"]] += 1
                             spans.append(
                                 {
                                     "text": span.text,
@@ -50,6 +58,8 @@ class FlairSentiment:
                                     "probability": f"{sentiment[0]['class_prob']:.2f}",
                                 }
                             )
+
+        
                     output.append(
                         {
                             "sentence": sent,
@@ -61,7 +71,29 @@ class FlairSentiment:
                 except Exception as e:
                     sys.stderr.write(f"{e}\nSentiment targetting failure:\n{sentence}")
                     # raise ValueError(f"{e}\nsent:\n{sentence}")
-        return output
+
+        posneg = stats["negative"] + stats["positive"]
+        tot = posneg + stats["neutral"]
+        bias_dir = "neutral"
+
+        if tot:
+            bias = posneg / tot * 100
+            if bias > 25:
+                if stats["positive"] - stats["negative"] > 0:
+                    bias_dir = "positive"
+                if stats["negative"] - stats["positive"] > 0:
+                    bias_dir = "negative"
+        #            print(f"{dir(stats)}", file=sys.stderr)
+        # output.append({"bias": bias_dir, "pos": stats["positive"], "neg": stats["negative"], "neut": stats["neutral"], "tot": tot})   
+        stats = {
+            "bias": bias_dir,
+            "positive": stats["positive"],
+            "negative": stats["negative"],
+            "neutral": stats["neutral"],
+            "total": tot,
+            "bias_value": f"{bias:.2f}",
+        }            
+        return output, stats
 
 
 if __name__ == "__main__":

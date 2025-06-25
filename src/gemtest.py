@@ -3,15 +3,10 @@ import google.generativeai as genai
 import sys
 import os
 
+# modelname promptfile
+
 DEFAULT_MODEL = "gemini-2.0-flash-thinking-exp-1219"
 DEFAULT_MODEL = "gemini-2.5-flash-preview-04-17"
-
-modelname = DEFAULT_MODEL
-
-if len(sys.argv) > 1:
-    modelname = sys.argv[1]
-    
-sys.stderr.write(f"model: {modelname}\n")
 
 # Ensure the GEMINI_API_KEY environment variable is set
 if not os.environ.get("GEMINI_API_KEY"):
@@ -20,8 +15,27 @@ if not os.environ.get("GEMINI_API_KEY"):
     
 # Configure the API key
 genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
-model = genai.GenerativeModel(modelname)
 
+modelname = DEFAULT_MODEL
+prompt = ""
+
+if len(sys.argv) > 2:
+    modelname = sys.argv[1]
+    promptfile = sys.argv[2]
+    try:
+        with open(promptfile, 'r') as f:
+            prompt = f.read()
+    except FileNotFoundError:
+        sys.stderr.write(f"Error: Prompt file '{promptfile}' not found.\n")
+        sys.exit(1)
+else:
+    if len(sys.argv) > 1:
+        modelname = sys.argv[1]
+ 
+# quiet   
+#sys.stderr.write(f"model: {modelname}\n")
+
+model = genai.GenerativeModel(modelname)
 buf = []
 
 for line in sys.stdin:
@@ -29,7 +43,7 @@ for line in sys.stdin:
         continue
     buf.append(line)
     
-prompt = "".join(buf)    
+prompt += "".join(buf)    
 response = model.generate_content(prompt)
 print(response.text)
 

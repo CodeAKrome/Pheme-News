@@ -7,5 +7,5 @@ while (<>) {
     $outfile = $_;
     $outfile=~s/\....$//;
     print("echo '$outfile'\n");
-    print("cat '$_' | src/relink.py tmp/dedupe_idlinksrc.tsv '${outfile}_relink.md' > '${outfile}_relink.md' 2> '${outfile}_perc.txt'\n");
+    print("cat '$_' | src/relink.py tmp/dedupe_idlinksrcbvalbias.tsv '${outfile}_relink.md' > '${outfile}_relink.md' 2> '${outfile}_perc.txt'\n");
 }

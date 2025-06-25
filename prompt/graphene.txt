@@ -1,5 +1,5 @@
 You are an expert political analyst, able to see all the relationships between things.
-Output Neo4j graphene only.
+Output Neo4j cypher query statements only.
 represent all the relationships between the entities in the attached news article tab delimited file.
 
 the file is tab delimited has 2 columns:
@@ -41,12 +41,40 @@ Always quote attribute values.
 All node names must start with a letter.
 Do not assign 'val' in relationships.
 
+Prefix any nodes that start with a number with the type of node like 'date'.
+Do not start DATE nodes with a number.
+
 Use both the entity name and entity type to generate node names so entities with the same name, but different types don't conflict. 
 Node names must be unique.
 Never reuse a node name, there must be only 1 node with that name.
 Node names must not contain spaces.
 Replace spaces with underscores for node names.
 All <subject node> and <object node> in a <relationship template> must have a node definition using the <node template> first.
+
+All DATE node names must start with a letter.
+If a DATE node starts with a number, prefix it with 'date'.
+
+Entities may have slightly different names, but refer to the same thing.
+Try to merge these into one.
+<example>
+<input>
+Donald Trump
+Trump
+President Trump
+</input>
+<output>
+Donald Trump
+</output>
+</example>
+
+Connect the entities in the provided list with each other by their relationships.
+
+Example:
+<text>Iran attacked Israel on June 20th.</text>
+<relationships>
+CREATE (<Iran>)-[:<ATTACKED>]->(<Israel>)
+CREATE (<Iran_attack>)-[:<OCCURRED_ON>]->(<dateJune20th>)
+</relationships>
 
 <node template>:
 CREATE (`<entity name><node type>`:<node type> {val: "<entity name>"})

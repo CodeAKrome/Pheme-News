@@ -7,6 +7,7 @@ while (<>) {
     if (/\*(\d+)\*/) {
         print;
         push @ids, $1;
+        #print "found $1";
     } else {
         if (@ids) {
             print "```\n".join(',', @ids) . "\n```\n";
@@ -16,4 +17,4 @@ while (<>) {
     }
 }
 
-print "@ids";
+print "```\n".join(',', @ids) . "\n```\n";

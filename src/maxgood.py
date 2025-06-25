@@ -40,7 +40,10 @@ def find_highest_good_file():
         print(f"file: {best_file} max_good: {max_good}", file=sys.stderr)
         best_file = best_file.split('_')[0]
         md = f"{best_file}_relink.md"
-        print(md, file=sys.stdout)
+
+        modelname = best_file[11:]
+        print(modelname, file=sys.stdout)
+
         absolute_path = os.path.join(cwd, 'tmp/top10.md')
         # cmd = f"cp {md} {absolute_path}"
         cmd = f"cat {md} | src/no_mthead.pl | src/gatherids.pl > {absolute_path}"

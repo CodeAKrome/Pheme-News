@@ -24,7 +24,7 @@ def make_label(text):
     
     # Remove all spaces and truncate to 32 characters
     cleaned = cleaned.replace(' ', '')[:32]
-    return cleaned
+    return first_letter(cleaned)
 
 def alphanumeric0(s):
     return "".join(c for c in s if c.isalnum())
@@ -113,7 +113,6 @@ def main():
             buf.append(f'CREATE ({srcname})-[:PUBLISHED {{date: {pubdate}}}]->({artid})')
 
             
-            # see if entitys exist
             stats = {
                 "positive": 0,
                 "negative": 0,
@@ -138,16 +137,21 @@ def main():
                         dupe_count += 1
                         print(f"DROP\t{sentence['sentence']}", file=sys.stderr)
                         continue
-                    
-                print(
-                    f"{id}\t{sentence['tag']}\t{sentence['score']}\t{sentence['sentence']}",
-                    file=sys.stderr,
-                )
+
+                # Don't print sentences
+                # print(
+                #     f"{id}\t{sentence['tag']}\t{sentence['score']}\t{sentence['sentence']}",
+                #     file=sys.stderr,
+                # )
 
                 # stats[sentence["tag"]] += 1
        
                 # create sentence nodes
 
+
+
+                # MERGE instead of CREATE !!!
+                
                 
                 # iterate through named entities
                 for span in sentence["spans"]:
@@ -157,7 +161,7 @@ def main():
                         newent = f"{span['value']}{span['text']}"
                         entname = first_letter(alphanumeric(newent))
                         print(
-                            f"WARN: [{newent}] -> [{entname}]: {span['value']} {span['text']}",
+                            f"Fix digits: [{newent}] -> [{entname}]: {span['value']} {span['text']}",
                             file=sys.stderr,
                         )
 
@@ -208,7 +212,10 @@ def main():
                         #         f"CREATE ({artid})-[:HATES {{score: '{span['score']}', prob: '{span['probability']}'}}]->({entname})"
                         #     )
                         
-                        
+
+            
+            
+            # This duplicates flair libarary data. Leaving it in because it's quick                        
             # Finished with sentences
             # dedupe should be full now.
             if dedupe_init:

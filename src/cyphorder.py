@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import sys
 
 """Reorder cypher statements so nodes are creaated before they are used in relationships."""

@@ -1,3 +1,9 @@
+# generate cypher quesries
+#cat cache/dedupe.jsonl | python src/sentiment.py > cache/dedupe_sentiment.cypher
+cypher() {
+    cat $1 | /Users/kyle/hub/Pheme-News/src/sentiment.py
+}
+
 # add decorations to initial sort
 # cat tmp | sed 's/\*\*//g' | python ~/hub/Pheme-News/src/relink.py ~/hub/Pheme-News/tmp/iran_israel_idlinksrc.tsv | ~/hub/Pheme-News/src/gatherids.pl > ~/hub/Pheme-News/tmp/iran_israel.md
 
