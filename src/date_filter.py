@@ -83,7 +83,7 @@ def main():
             article_date = published_parsed_to_datetime(data['published_parsed'])
             
             if article_date is None:
-                print(f"Error: Invalid 'published_parsed' format -{data['published_parsed']}-", file=sys.stderr)
+                print(f"Error: Invalid 'published_parsed' format id: {data['source']} {data['id']} -{data['published_parsed']}-", file=sys.stderr)
                 continue
                 # sys.exit(1)
             

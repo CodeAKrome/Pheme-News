@@ -9,7 +9,6 @@ cat prompt.txt | ./gemtest.py 'models/gemini-1.5-flash-002' > 'output/gemini-1.5
 cat prompt.txt | ./gemtest.py 'models/gemini-1.5-flash-8b' > 'output/gemini-1.5-flash-8b.txt'
 cat prompt.txt | ./gemtest.py 'models/gemini-1.5-flash-8b-001' > 'output/gemini-1.5-flash-8b-001.txt'
 cat prompt.txt | ./gemtest.py 'models/gemini-1.5-flash-8b-latest' > 'output/gemini-1.5-flash-8b-latest.txt'
-cat prompt.txt | ./gemtest.py 'models/gemini-2.5-pro-exp-03-25' > 'output/gemini-2.5-pro-exp-03-25.txt'
 cat prompt.txt | ./gemtest.py 'models/gemini-2.5-pro-preview-03-25' > 'output/gemini-2.5-pro-preview-03-25.txt'
 cat prompt.txt | ./gemtest.py 'models/gemini-2.5-flash-preview-04-17' > 'output/gemini-2.5-flash-preview-04-17.txt'
 cat prompt.txt | ./gemtest.py 'models/gemini-2.5-flash-preview-05-20' > 'output/gemini-2.5-flash-preview-05-20.txt'

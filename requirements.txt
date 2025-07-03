@@ -1,4 +1,13 @@
-colorama
+#colorama
+#pillow
+#nltk
+#gradio
+icecream
+feedparser
+bs4
+lxml
+flair
+NewsSentiment
+# This must go after flair
 google-generativeai
-pillow
-nltk
+# Then run INSTAL.sh for TTS

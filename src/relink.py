@@ -3,18 +3,39 @@
 import sys
 import re
 
+# id2link tab delim id, link, src, bval, bias
+# bug = True enables debug mode
+
+bug = False
+
 id2link = sys.argv[1]
 infile = sys.argv[2] if len(sys.argv) > 2 else None
 dex = {}
 
+#print(f"Reading id2link file: {id2link}", file=sys.stderr)
+
+# Load rest of data , link by article id
 with open(id2link, "r") as f:
     for line in f:
+        if not line:
+            continue
+            
+#        print(f"-> {line}", file=sys.stderr, end='')
+        
         line = line.strip()
-        id, link, src, bval, bias = line.split("\t")
+        try:
+            id, link, src, bval, bias = line.split("\t")
+        except ValueError:
+            id, link, src = line.split("\t")
+            bval = 0
+            bias = "NA"            
+            
         id = int(id)
         link = link.strip()
         src = src.strip()
-        dex[id] = (link, src)
+        dex[id] = (link, src, bval, bias)
+        # if bug:
+        #     print(f"=>\t{id}\t{link}\t{src}\t{bval}\t{bias}", file=sys.stderr)
 
 # - **1412**: Africa: Former Mauritanian Finance Minister Tah Elected President of AfDB
 #- *3958* Biden: We are making some real progress on Gaza deal
@@ -35,30 +56,37 @@ for line in sys.stdin:
     if not line:
         continue
     tot += 1
+    if bug:
+        print(f"-> {tot}\t{line}")
+    
     hmatch = hyphen.match(line)
     if hmatch:
         m = cite.match(line)
         if not m:
-            # sys.stderr.write(f"Bad hyphen line: {line}\n")
             bhyph += 1
+            if bug:
+                print(f"Bad hyphen {bhyph} {line}\n")
             continue            
     
         id = int(m.group(1))
+
+        if bug:
+            print(f"ID: {id}\n")
         
         if id in ids:
             dupe += 1
-            # sys.stderr.write(f"Dup {id}\n")
+            if bug:
+                print(f"Dup {dupe} {id}\n")
             continue
 
         ids.add(id)
         
         if not id in dex:
             bad += 1
-            # perc = good / tot
-            # sys.stderr.write(f"<-{id} {perc:.2f} {tot} {good} / {bad}\n")
-    #        print(line)
+            if bug:
+                print(f"{bad} {id} not in dex\n")
             continue
-        link, src = dex[id]
+        link, src, bval, bias = dex[id]
         # buf.append(id)
         # h = head.match(line)
         

@@ -75,6 +75,7 @@ class FlairSentiment:
         posneg = stats["negative"] + stats["positive"]
         tot = posneg + stats["neutral"]
         bias_dir = "neutral"
+        bias = 0.0
 
         if tot:
             bias = posneg / tot * 100
