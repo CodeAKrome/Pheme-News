@@ -1,3 +1,11 @@
+# Slice by entity list
+#Eric Trump	PERSON	3	27680
+# entities to filter
+# out article ids
+ent2ids() {
+    cut -f 4 $1 | perl -ne 's/\n//g;print;'
+}
+
 # generate cypher quesries
 #cat cache/dedupe.jsonl | python src/sentiment.py > cache/dedupe_sentiment.cypher
 cypher() {
@@ -9,6 +17,7 @@ cypher() {
 
 # slice out all we need from id list
 # graphsumm.sh basename id,id,id
+# sync this
 slice() {
     jq -c "select(.id | IN($2))" dedupe.jsonl >../tmp/${1}.jsonl
     cat ../tmp/${1}.jsonl | jq -r '.ner[] | .spans[] | [.text, .value] | @tsv' | sort | uniq | sort -t $'\t' -k 2 | grep -E '(PERSON|ORG|EVENT|LOC|FAC|GPE|NORP|DATE)' > ../tmp/${1}_ent.tsv

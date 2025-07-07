@@ -8,7 +8,7 @@ pipe0:
 	@cat config/political_feeds.tsv | python src/read_rss.py | python src/tallyman.py | python src/read_article.py | grep '"art"' | python src/flair_news.py | egrep '^\{' | python src/dedupe_init.py | python src/dedupe.py >> cache/dedupe.jsonl
 allruns: tbeg run1 run2 run3 run4 run5 run6init run6 dedupe entitydict idtitlepubsumm idlinksrcbvalbias top10 top10slice llm tend
 testruns: tbeg run1 run2 run3 run4 run5 run6init run6 dedupe entitydict idtitlepubsumm idlinksrcbvalbias top10 top10slice llmtest tend
-partruns: run6init run6 dedupe entitydict idtitlepubsumm idlinksrcbvalbias top10 top10slice llm tend
+partruns: dedupe entitydict idtitlepubsumm idlinksrcbvalbias top10 top10slice llm tend
 tbeg:
 	@echo "BEG" > cache/runtime.txt ; date +"%m-%d %H:%M:%S" >> cache/runtime.txt
 tend:
@@ -36,7 +36,7 @@ sentiment:
 	@cat cache/dedupe.jsonl | python src/sentiment.py > cache/dedupe_sentiment.cypher
 # Restrict stories to those in last day
 dedupe:
-	@cat `find cache -type f -name 'dedupe_*.jsonl' -newermt '1 day ago'` | src/date_filter.py '-1 day' > cache/dedupe.jsonl
+	@cat `find cache -type f -name 'dedupe_*.jsonl' -newermt '2 day ago'` | src/date_filter.py '-2 day' > cache/dedupe.jsonl
 entitydict:
 	@cat cache/dedupe.jsonl | python src/jsonl2entitydict.py > cache/dedupe_entity_dictionary.tsv
 idtitlesumm:
