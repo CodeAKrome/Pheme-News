@@ -10,4 +10,4 @@ flair
 NewsSentiment
 # This must go after flair
 google-generativeai
-# Then run INSTAL.sh for TTS
+# Then run INSTALL.sh for TTS

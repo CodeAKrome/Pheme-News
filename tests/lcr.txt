@@ -1,0 +1,70 @@
+ROLE:
+You are an expert political analyst.
+
+GOAL:
+Determine the amount of left center or right bias there is in the attached news article.
+
+Analyze the following news article for a potential political bias. 
+The characteristics of left center and right bias follow:
+
+Bias: left
+"Analyze the following news article for a potential leftist political bias. Consider if the article:
+
+1. **Values & Positions:** Prioritizes social equality, collective welfare, environmental protection, or the rights of marginalized groups. Advocates for government intervention to address societal problems (e.g., healthcare, education, poverty).
+    
+2. **Support & Opposition:** Explicitly or implicitly supports labor unions, social safety nets, or policies aimed at wealth redistribution. Opposes corporate power, income inequality, or discriminatory practices.
+    
+3. **Viewpoint & Direction:** Suggests societal development towards greater inclusivity and sustainability. Emphasizes the preservation of natural resources or the transition to renewable energy. Promotes international cooperation or humanitarian aid.
+    
+4. **Language & Tone:** Uses language that evokes empathy for disadvantaged groups, criticizes systemic injustices, or frames issues through a lens of social progress.
+    
+
+Based on these criteria, determine the degree of left-leaning bias (e.g., minimal, moderate, strong)
+
+---
+
+Bias: Center
+"Analyze the following news article for a potential centrist political bias. Consider if the article:
+
+1. **Values & Positions:** Emphasizes pragmatism, compromise, gradual change, or a balance between individual liberty and social responsibility. Supports a strong middle class, established institutions, or bipartisan solutions.
+    
+2. **Support & Opposition:** Advocates for targeted social programs, market-based solutions with moderate regulation, or fiscal responsibility. Opposes extreme viewpoints from either the left or the right, or radical societal upheaval.
+    
+3. **Viewpoint & Direction:** Suggests societal progress through innovation and stable economic growth. Seeks a balance between resource exploitation and preservation, potentially favoring diverse energy sources. Promotes multilateralism and pragmatic foreign policy.
+    
+4. **Language & Tone:** Uses neutral or objective language, presents multiple perspectives without strong endorsement of one, or frames issues as complex problems requiring consensus-based solutions. Avoids overly emotional or ideologically charged rhetoric.
+    
+
+Based on these criteria, determine the degree of centrist bias (e.g., minimal, moderate, strong)
+
+---
+
+Bias: Right
+"Analyze the following news article for a potential right-leaning political bias. Consider if the article:
+
+1. **Values & Positions:** Prioritizes individual liberty, limited government intervention, free-market principles, or traditional values. Advocates for personal responsibility, national sovereignty, or a strong national defense.
+    
+2. **Support & Opposition:** Explicitly or implicitly supports businesses, entrepreneurs, tax cuts, or deregulation. Opposes high taxes, extensive government programs, or perceived threats to national identity/security.
+    
+3. **Viewpoint & Direction:** Suggests societal development through economic growth driven by free markets and individual enterprise. Favors the exploitation of natural resources for energy independence. Promotes an assertive foreign policy focused on national interests.
+    
+4. **Language & Tone:** Uses language that emphasizes individual achievement, fiscal prudence, national pride, or a critical stance towards government overreach. May express skepticism towards international bodies or social programs.
+    
+
+Based on these criteria, determine the degree of right-leaning bias (e.g., minimal, moderate, strong)
+
+You will only return one line of json with the bias direction and degree of agreement with the bias expressed as a degree.
+
+Ouput format:
+{"bias": "[left,center,right]", "degree": "[minimal,moderate,strong]"}
+
+Attachment:
+Los Angeles Mayor Karen Bass canceled an appearance at an event to mark the six-month anniversary of the Palisades Fire to show up at an Immigration and Customs Enforcement (ICE) raid in a\
+n attempt to stop it. Bass had been scheduled to appear with Gov. Gavin Newsom (D), Sen. Alex Padilla (D-CA), and other officials to mark the anniversary of the Palisades and Eaton Fires. \
+But she decided to protest ICE instead. The mayor’s absence was not explained at the event; she was, an official said, attending an “emergent event.” That turned out to be an immigration r\
+aid. Under Bass, Los Angeles has spent more on homeless people than on firefighting. Lately, she has become obsessed with championing the cause of anti-ICE protests, even though they have \
+attacked law enforcement — including the Los Angeles Police Department. Bass has blamed President Donald Trump for riots in the city, and has essentially defending the riots by saying they\
+ will stop when the anti-ICE raids also stop. Bass was out of the country during the Palisades Fire, breaking a promise not to leave the country during her administration and to focus inst\
+ead on local priorities. The Department of Justice recently sued Los Angeles over its “sanctuary city” policy, saying it discriminates against federal law enforcement. As she runs for re-e\
+lection, Bass appears to have made a political calculation that her future depends more on satisfying the far left rather than attending to the needs of local residents. Even Newsom acknow\
+ledged the need for local permitting for rebuilding, which has stalled, to be accelerated.

@@ -14,6 +14,7 @@ trig = -1
 sound = []
 sumcnt = 0
 
+
 def runcmd(command):
     """Execute command using subprocess.run()"""
     global sumcnt
@@ -30,6 +31,7 @@ def runcmd(command):
     except Exception as e:
         print(f"Error executing command: {e}")
 
+
 # -----
 
 if len(sys.argv) > 3:
@@ -45,15 +47,17 @@ for line in sys.stdin:
         continue
 
     # print(f"{trig}\t{line}", end='')
-    print(line, end='')
+    print(line, end="")
 
     if trig == 1:
-        cmd.append(f"cat {infile} | jq 'select(.id | IN({line.strip()}))' | jq '[.text]' | src/gemtest.py {model} {promptfile}")
+        cmd.append(
+            f"cat {infile} | jq 'select(.id | IN({line.strip()}))' | jq '[.text]' | src/gemtest.py {model} {promptfile}"
+        )
     if line[0] == "`":
         trig = trig * -1
-        
-        #print(f"Trigger: {trig} cmd: {cmd}")
-        
+
+        # print(f"Trigger: {trig} cmd: {cmd}")
+
         if trig == -1:
             # print("")
             summary = runcmd(cmd[0])
@@ -65,11 +69,11 @@ for line in sys.stdin:
             sumcnt += 1
             # print(cmd[0])
             cmd = []
-            
+
         continue
-        
-        
+
+
 for ent in sound:
     print(json.dumps(ent), file=sys.stderr)
-    
-#print(f"Total summaries: {sumcnt}", file=sys.stderr)
+
+# print(f"Total summaries: {sumcnt}", file=sys.stderr)

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 from json import loads, JSONDecodeError
-#from lib.flair_sentiment import FlairSentiment
+
+# from lib.flair_sentiment import FlairSentiment
 import sys
 import re
 from collections import defaultdict
@@ -13,18 +14,20 @@ from collections import defaultdict
 # (Laurence)-[:ACTED_IN {roles:['Morpheus']}]->(TheMatrix),
 PATTERN = re.compile(r"[^a-zA-Z0-9]")
 
+
 # Remove junk words spaces then truncate for use as label
 def make_label(text):
     # Define junk words to remove (add more as needed)
-    junk_words = r'\b(the|an|a|and|or|but|in|on|at|to|for|of|with|by)\b'
-    
+    junk_words = r"\b(the|an|a|and|or|but|in|on|at|to|for|of|with|by)\b"
+
     # Remove junk words (case-insensitive), multiple spaces, and non-alphanumeric chars
-    cleaned = re.sub(junk_words, '', text, flags=re.IGNORECASE)
-    cleaned = re.sub(r'[^a-zA-Z0-9]', '', cleaned)
-    
+    cleaned = re.sub(junk_words, "", text, flags=re.IGNORECASE)
+    cleaned = re.sub(r"[^a-zA-Z0-9]", "", cleaned)
+
     # Remove all spaces and truncate to 32 characters
-    cleaned = cleaned.replace(' ', '')[:32]
+    cleaned = cleaned.replace(" ", "")[:32]
     return first_letter(cleaned)
+
 
 def alphanumeric0(s):
     return "".join(c for c in s if c.isalnum())
@@ -58,11 +61,11 @@ def main():
     entity = []
     id = 0
 
-    #sentiment_analyzer = FlairSentiment()
+    # sentiment_analyzer = FlairSentiment()
 
     # Bias entities for linking
     for bias in ["positive", "negative", "neutral"]:
-        print(f"CREATE ({bias}:Bias " + "{val: \"" + bias + "\"})")
+        print(f"CREATE ({bias}:Bias " + '{val: "' + bias + '"})')
 
     dedupe = {}
     dedupe_init = True
@@ -77,42 +80,40 @@ def main():
                 continue
 
             print(f"{lno}", file=sys.stderr)
-            
+
             ner = data.get("ner", [])
 
-#            ner = sentiment_analyzer.process_text(data["text"])
+            #            ner = sentiment_analyzer.process_text(data["text"])
 
             # see if source exists
             srcname = first_letter(alphanumeric(data["source"]))
             if srcname not in source:
                 source.append(srcname)
-                val = "{val: \"" + srcname + "\"}"
+                val = '{val: "' + srcname + '"}'
                 print(f"CREATE ({srcname}:Source {val})")
             # article
             eq_title = esc_quotes(data["title"])
-            #artid = f"Art{id}"
+            # artid = f"Art{id}"
             artid = f"{make_label(eq_title)}"
 
-
             # KEG
-            #print(f"CREATE ({artid}:Article {{title:\"{eq_title}\", id: {id}}})")
+            # print(f"CREATE ({artid}:Article {{title:\"{eq_title}\", id: {id}}})")
             buf = []
-
 
             # link source and article
             # deal with missing data
-            pubdate = "\"N/A\""
+            pubdate = '"N/A"'
             if "published_parsed" in data:
-                pubdate = data['published_parsed']
+                pubdate = data["published_parsed"]
             else:
                 if "published" in data:
-                    pubdate = data['published']
+                    pubdate = data["published"]
 
+            # print(f'CREATE ({srcname})-[:PUBLISHED {{date: {pubdate}}}]->({artid})')
+            buf.append(
+                f"CREATE ({srcname})-[:PUBLISHED {{date: {pubdate}}}]->({artid})"
+            )
 
-            #print(f'CREATE ({srcname})-[:PUBLISHED {{date: {pubdate}}}]->({artid})')
-            buf.append(f'CREATE ({srcname})-[:PUBLISHED {{date: {pubdate}}}]->({artid})')
-
-            
             stats = {
                 "positive": 0,
                 "negative": 0,
@@ -125,7 +126,7 @@ def main():
             # ref_pos = []
 
             refmap = defaultdict(lambda: defaultdict(int))
-            
+
             dupe_count = 0
             for sentence in ner:
                 # Get rid of duplicate lines by seeing if current sentence matches ones previously seen
@@ -145,14 +146,11 @@ def main():
                 # )
 
                 # stats[sentence["tag"]] += 1
-       
+
                 # create sentence nodes
 
-
-
                 # MERGE instead of CREATE !!!
-                
-                
+
                 # iterate through named entities
                 for span in sentence["spans"]:
                     ent = esc_quotes(span["text"])
@@ -176,56 +174,51 @@ def main():
                             f"CREATE ({artid})-[:REFS {{score: '{span['score']}', prob: '{span['probability']}'}}]->({entname})"
                         )
 
-                        refmap[entname]['nREFS'] += 1
-                        
+                        refmap[entname]["nREFS"] += 1
+
                         # if entname not in ref_entity:
                         #     ref_entity.append(entname)
                         #     buf.append(
                         #         f"CREATE ({artid})-[:REFS {{score: '{span['score']}', prob: '{span['probability']}'}}]->({entname})"
                         #     )
-                        
-                        
+
                     if span["sentiment"] == "positive":
                         print(
                             f"CREATE ({artid})-[:LOVES {{score: '{span['score']}', prob: '{span['probability']}'}}]->({entname})"
                         )
 
-                        refmap[entname]['nLOVES'] += 1
-                        
+                        refmap[entname]["nLOVES"] += 1
+
                         # if entname not in ref_pos:
-                        #     ref_pos.append(entname)                        
+                        #     ref_pos.append(entname)
                         #     buf.append(
                         #         f"CREATE ({artid})-[:LOVES {{score: '{span['score']}', prob: '{span['probability']}'}}]->({entname})"
                         #     )
-                        
-                        
+
                     if span["sentiment"] == "negative":
                         print(
                             f"CREATE ({artid})-[:HATES {{score: '{span['score']}', prob: '{span['probability']}'}}]->({entname})"
                         )
 
-                        refmap[entname]['nHATES'] += 1
-                        
+                        refmap[entname]["nHATES"] += 1
+
                         # if entname not in ref_neg:
-                        #     ref_neg.append(entname)                        
+                        #     ref_neg.append(entname)
                         #     buf.append(
                         #         f"CREATE ({artid})-[:HATES {{score: '{span['score']}', prob: '{span['probability']}'}}]->({entname})"
                         #     )
-                        
 
-            
-            
-            # This duplicates flair libarary data. Leaving it in because it's quick                        
+            # This duplicates flair libarary data. Leaving it in because it's quick
             # Finished with sentences
             # dedupe should be full now.
             if dedupe_init:
                 dedupe_init = False
             else:
-            # If we haven't seen any dupes and we didn't just fill it, refill dedupe
+                # If we haven't seen any dupes and we didn't just fill it, refill dedupe
                 if dupe_count == 0:
                     dedupe_init = True
                     dedupe = {}
-                             
+
             posneg = stats["negative"] + stats["positive"]
             tot = posneg + stats["neutral"]
             bias_dir = "neutral"
@@ -250,7 +243,7 @@ def main():
 
             print(
                 f"CREATE ({artid})-[:BIAS {{bias: {bias:.2f}, pos: {stats['positive']}, neg: {stats['negative']}, neut: {stats['neutral']}, tot: {tot}}}]->({bias_dir})"
-            )                
+            )
 
             id += 1
 

@@ -1,8 +1,15 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+read_rss.py - Read RSS feeds from stdin and output articles in JSON format.
+"""
+
 import sys
 import json
 import re
 import html
-from icecream import ic
+
+# from icecream import ic
 from lib.util.decor import arrest
 from dataclasses import dataclass, asdict, field
 

@@ -7,6 +7,7 @@ import google.auth
 
 DEFAULT_MODEL = "gemini-2.5-pro"
 
+
 def main():
     """
     Uses Gemini AI to answer a prompt from a file with data from stdin.
@@ -46,7 +47,7 @@ def main():
 
     if promptfile:
         try:
-            with open(promptfile, 'r') as f:
+            with open(promptfile, "r") as f:
                 prompt = f.read()
         except FileNotFoundError:
             sys.stderr.write(f"Error: Prompt file '{promptfile}' not found.\n")
@@ -59,6 +60,7 @@ def main():
     model = genai.GenerativeModel(modelname)
     response = model.generate_content(full_prompt)
     print(response.text)
+
 
 if __name__ == "__main__":
     main()

@@ -2,10 +2,10 @@ import sys
 import html
 
 print("<!DOCTYPE html>")
-print("<html lang=\"en\">")
+print('<html lang="en">')
 print("<head>")
-print("  <meta charset=\"UTF-8\">")
-print("  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">")
+print('  <meta charset="UTF-8">')
+print('  <meta name="viewport" content="width=device-width, initial-scale=1.0">')
 print("  <title>TSV to HTML Table</title>")
 print("  <style>")
 print("    body { font-family: sans-serif; margin: 20px; }")
@@ -25,7 +25,7 @@ for line in sys.stdin:
     line = line.strip()
     if not line:
         continue
-    columns = line.split('\t')
+    columns = line.split("\t")
     print("    <tr>")
     for col in columns:
         print(f"      <td>{html.escape(col)}</td>")

@@ -9,6 +9,7 @@ import requests
 # Example:
 # python lib/ollamaai.py 'llama3.1:8b' 3000 prompt="Capital of Spain"
 
+
 # add print method to show llm data like model etc
 class OllamaAI:
     def __init__(
@@ -51,7 +52,7 @@ class OllamaAI:
             # Add image to the message
             message["images"] = [img_str]
         # bug
-        #sys.stderr.write(f"\n===\nSYS:\n{self.system}\nPROM:\n{prompt}\n---\n")
+        # sys.stderr.write(f"\n===\nSYS:\n{self.system}\nPROM:\n{prompt}\n---\n")
         # sys.stderr.write(f"model: {self.model}\nmessages:\n{message}\nsystem: {self.system}\n")
 
         try:
@@ -77,13 +78,13 @@ def load_from_file(file_path):
 
 
 def main(
-        model,
-        token,
-        prompt=None,
-        prompt_file=None,
-        image=None,
-        system_prompt=None,
-        system_prompt_file=None,
+    model,
+    token,
+    prompt=None,
+    prompt_file=None,
+    image=None,
+    system_prompt=None,
+    system_prompt_file=None,
 ):
     """
     Interact with OllamaAI.
@@ -112,13 +113,12 @@ def main(
     if prompt:
         sys.stderr.write("PROMPT")
         # print(prompt)
-        
-    
+
     if system_prompt_file:
         system_prompt = load_from_file(system_prompt_file)
 
-#    print(f"model {model}")
-        
+    #    print(f"model {model}")
+
     ollama_ai = OllamaAI(system_prompt=system_prompt, model=model, max_tokens=token)
 
     if image:
@@ -131,6 +131,7 @@ def main(
 
 if __name__ == "__main__":
     import fire
+
     fire.Fire(main)
 
 #    main('deepseek-r1:70b', 128000, prompt_file='../tmp/0601_titles_prompt.txt')
@@ -139,4 +140,3 @@ if __name__ == "__main__":
 #    main('qwen3:32b', 40000, prompt_file='../tmp/0601_titles_prompt.txt')
 #    main('llama3.1:8b', 128000, prompt_file='../tmp/0601_titles_prompt.txt')
 #    main('llama4:latest', 256000, prompt_file='../tmp/0601_titles_prompt.txt')
-

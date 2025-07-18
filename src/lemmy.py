@@ -7,11 +7,12 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 
-#echo '{"content": "The quick brown foxes are running!"}' | ./lemmy.py process --field content
+# echo '{"content": "The quick brown foxes are running!"}' | ./lemmy.py process --field content
+
 
 class TextProcessor:
     def __init__(self):
-        self.stop_words = set(stopwords.words('english'))
+        self.stop_words = set(stopwords.words("english"))
         self.lemmatizer = WordNetLemmatizer()
 
     def clean_text(self, text):
@@ -19,7 +20,7 @@ class TextProcessor:
         # Convert to lowercase
         text = text.lower()
         # Remove punctuation
-        text = text.translate(str.maketrans('', '', string.punctuation))
+        text = text.translate(str.maketrans("", "", string.punctuation))
         # Tokenize
         tokens = word_tokenize(text)
         # Remove stop words
@@ -27,12 +28,12 @@ class TextProcessor:
         # Lemmatize
         tokens = [self.lemmatizer.lemmatize(token) for token in tokens]
         # Join tokens back into a string
-        return ' '.join(tokens)
+        return " ".join(tokens)
 
     def process(self, jsonl=False, text=False, file=None, field="text"):
         """
         Process text input based on command-line options.
-        
+
         Args:
             jsonl (bool): Read JSONL input from stdin (default mode).
             text (bool): Read plain text from stdin.
@@ -40,7 +41,9 @@ class TextProcessor:
             field (str): JSON field to extract text from (default: "text").
         """
         if sum([jsonl, text, file is not None]) > 1:
-            raise ValueError("Only one input mode (--jsonl, --text, --file) can be specified.")
+            raise ValueError(
+                "Only one input mode (--jsonl, --text, --file) can be specified."
+            )
 
         # Default to JSONL mode if no mode is specified
         if not jsonl and not text and not file:
@@ -49,7 +52,7 @@ class TextProcessor:
         if file:
             # Read from file
             try:
-                with open(file, 'r', encoding='utf-8') as f:
+                with open(file, "r", encoding="utf-8") as f:
                     input_text = f.read()
                 processed_text = self.clean_text(input_text)
                 print(processed_text)
@@ -72,7 +75,9 @@ class TextProcessor:
                 try:
                     data = json.loads(line.strip())
                     if field not in data:
-                        print(f"Error: Field '{field}' not found in JSON: {line.strip()}")
+                        print(
+                            f"Error: Field '{field}' not found in JSON: {line.strip()}"
+                        )
                         continue
                     input_text = data[field]
                     processed_text = self.clean_text(input_text)
@@ -84,5 +89,6 @@ class TextProcessor:
                     print(f"Error processing JSONL: {e}")
                     continue
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     fire.Fire(TextProcessor)

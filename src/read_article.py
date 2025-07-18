@@ -23,6 +23,7 @@ class UserAgentCycler:
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.3",
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.3",
         "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/25.0 Chrome/121.0.0.0 Safari/537.3",
+        "Lynx/2.8.9dev.1 libwww-FM/2.14 SSL-MM/1.4.1 GNUTLS/3.3.8",
     ]
 
     def __init__(self):
@@ -152,13 +153,15 @@ class RSSFeedProcessor:
 
     def paragraph_text(self, doc: str) -> str:
         """Return the text content of paragraph html tags"""
-        soup = BeautifulSoup(doc, "lxml")
+        soup = BeautifulSoup(
+            doc, features="xml"
+        )  # Use lxml parser for better performance
         paragraphs = soup.find_all("p")
         result = []
         for p in paragraphs:
             # Replace HTML entities with UTF-8 entities
             text = html.unescape(str(p))
-            text = BeautifulSoup(text, "html.parser").get_text()
+            text = BeautifulSoup(text, features="xml").get_text()
             text = re.sub("\n", "", text)
             # Remove any remaining HTML tags
             text = re.sub("<[^<]+?>", "", text)

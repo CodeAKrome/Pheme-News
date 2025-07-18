@@ -40,12 +40,12 @@ except FileNotFoundError:
 count_fh = open(COUNTERFILE, "w")
 if not id:
     id = 0
-    
+
 for line in sys.stdin:
     line = line.strip()
 
-    print(f"> {line}")
-    
+    #    print(f"{line}")
+
     if not line:
         continue
     data = loads(line)

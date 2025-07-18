@@ -1,0 +1,95 @@
+ROLE:
+You are an expert political analyst.
+
+GOAL:
+Determine the amount of left center or right bias there is in the news article Attachment and give a very short description of why of no more than 3 sentences.
+
+Analyze the following news article for a potential political bias. 
+The characteristics of left center and right bias follow:
+
+---
+
+Bias: left
+"Analyze the following news article for a potential leftist political bias. Consider if the article:
+
+1. **Values & Positions:** Prioritizes social equality, collective welfare, environmental protection, or the rights of marginalized groups. Advocates for government intervention to address societal problems (e.g., healthcare, education, poverty).
+    
+2. **Support & Opposition:** Explicitly or implicitly supports labor unions, social safety nets, or policies aimed at wealth redistribution. Opposes corporate power, income inequality, or discriminatory practices.
+    
+3. **Viewpoint & Direction:** Suggests societal development towards greater inclusivity and sustainability. Emphasizes the preservation of natural resources or the transition to renewable energy. Promotes international cooperation or humanitarian aid.
+    
+4. **Language & Tone:** Uses language that evokes empathy for disadvantaged groups, criticizes systemic injustices, or frames issues through a lens of social progress.
+    
+
+Based on these criteria, determine the degree of left-leaning bias (e.g., minimal, moderate, strong)
+Construct a brief reason for your answer of no longer than 3 sentences which explains the key concept.
+
+Example:
+A Palestinian man carrying items wrapped in plastic following an Israeli strike at a school sheltering displaced Palestinians, in the Al-Bureij camp, in the central Gaza Strip, on July 8. PHOTO: AFP Summary AI generated Published Jul 08, 2025, 11:02 PM Updated Jul 08, 2025, 11:25 PM GAZA - Whenever Mansour Abu Al-Khaier stares across Gaza, all the 45-year-old Palestinian man sees is death and destruction in the tiny enclave after nearly two years of war between Hamas militants and Israel. But even though Palestinian lives have been shattered during the course of Israeli airstrikes and heavy bombardment, Mr Al-Khaier and others flatly reject US President Donald Trump’s Israeli-backed plan to displace Gaza’s 2.3 million population. “This is our land. Who would we leave it to, where would we go?” asked Mr Al-Khaier, a technician. Mr Trump, hosting Israeli Prime Minister Benjamin Netanyahu at the White House on July 7, indicated progress on a disputed initiative to relocate Palestinians out of the coastal enclave, citing “great cooperation from... surrounding countries...” Speaking to reporters at the start of a dinner between US and Israeli officials, Mr Netanyahu said the United States and Israel were working with other countries that would give Palestinians a “better future,” suggesting that Gazans would be able to move to neighbouring nations. In an exchange with Mr Trump, Mr Netanyahu said: “You know if people want to stay, they can stay. But if they want to leave they should be able to leave. It shouldn’t be a prison. It should be an open place and give people free choice.” He added: “We’re working with the United States very closely about finding countries that will seek to realise what they always say, that they wanted to give the Palestinians a better future. I think we’re getting close to finding several countries.” Asked about Mr Netanyahu’s remarks, UN human rights spokesperson Ravina Shamdasani told a Geneva press briefing:  “This raises concerns with regards to forcible transfer - the concept of voluntary transfers in the context that we are seeing in Gaza right now (is) very questionable.” Five days after becoming president in January, Mr Trump said Jordan and Egypt should take in Palestinians from Gaza while suggesting he was open to this being a long-term plan. Cairo and Amman quickly rebuffed Mr Trump’s idea to turn impoverished Gaza into the “Riviera of the Middle East”, and so did Palestinians and human rights groups who said the plan would amount to ethnic cleansing.  turn impoverished Gaza into the “Riviera of the Middle East”, When asked this week about displacing Palestinians, Mr Trump said the countries around Israel were helping out. “We’ve had great cooperation from... surrounding countries. ...So something good will happen,” Mr Trump said. Saed, a 27-year-old Gaza Palestinian, woke up troubled to the news that Mr Trump and Mr Netanyahu, whose military has flattened much of Gaza, were again floating the displacement idea. Even after more than 20 months of war and repeated internal displacement, he remains deeply attached to Gaza, a tiny, densely-populated strip that is itself home to generations of refugees from the 1948 war that led to the creation of Israel. “We have the right to leave of our own free will and visit other countries, but we reject the plan of displacement as Palestinians,” said Saed. Palestinians have long sought to create an independent state in the Israeli-occupied West Bank, Gaza and East Jerusalem through a US-mediated peace process.  Many Palestinians accuse Israel of having methodically undermined their statehood prospects through increased settlement building in the West Bank and by levelling much of Gaza during the current war.  Israel rejects the accusation, saying it is fighting only to eliminate Palestinian militants it says pose an existential threat, and that it has historical and biblical roots in the West Bank. Displacement is one of the most emotional issues for Palestinians, who fear a repetition of the 1948 “Nakba” (catastrophe) when hundreds of thousands were dispossessed of their homes in the war of Israel’s birth. The Nakba has been one of the defining experiences for Palestinians for more than 75 years, helping to shape their national identity and casting its shadow on their conflicted relationship with Israel in the decades since. To Israelis, the creation of their state was a joyous moment for a long-persecuted people.  The Gaza war erupted when Hamas attacked southern Israel in October 2023, killing around 1,200 people and taking 251 hostages, according to Israeli tallies. About 50 hostages remain in Gaza, with 20 believed to be alive. Israel’s subsequent assault on the Palestinian enclave in its war with Hamas has killed over 57,000 Palestinians, according to the Gaza health ministry.  Some Palestinians who have faced relentless Israeli airstrikes and severe shortages of food, fuel, medicine and water are looking for a way out, according to findings by the Palestinian Centre for Policy and Survey Research. “Almost half want to leave the Gaza Strip if they could,”  the think-tank said in a report in May. A proposal seen by Reuters and bearing the name of a controversial US-backed aid group described a plan to build large-scale camps called “Humanitarian Transit Areas” inside - and possibly outside - Gaza to house the Palestinian population. It outlined a vision of “replacing Hamas control over the population in Gaza”. As far as Gaza Palestinian Abu Samir el-Fakaawi was concerned, “I will not leave Gaza. This is my country.”  He added: “Our children who were martyred in the war are buried here. Our families. Our friends. Our cousins. We are all buried here. Whether Trump or Netanyahu or anyone else likes it or not, we are staying on this land.
+
+Output:
+{"bias": "left", "degree": "strong", "reason": "The article demonstrates a strong left bias by framing the story almost entirely from the Palestinian perspective, prioritizing the voices and suffering of a marginalized group. It uses emotive language to describe their plight and highlights accusations of human rights violations and historical trauma like the 'Nakba'. This focus on social justice and criticism of state-sponsored actions aligns with a left-leaning viewpoint."}
+
+---
+
+Bias: Center
+"Analyze the following news article for a potential centrist political bias. Consider if the article:
+
+1. **Values & Positions:** Emphasizes pragmatism, compromise, gradual change, or a balance between individual liberty and social responsibility. Supports a strong middle class, established institutions, or bipartisan solutions.
+    
+2. **Support & Opposition:** Advocates for targeted social programs, market-based solutions with moderate regulation, or fiscal responsibility. Opposes extreme viewpoints from either the left or the right, or radical societal upheaval.
+    
+3. **Viewpoint & Direction:** Suggests societal progress through innovation and stable economic growth. Seeks a balance between resource exploitation and preservation, potentially favoring diverse energy sources. Promotes multilateralism and pragmatic foreign policy.
+    
+4. **Language & Tone:** Uses neutral or objective language, presents multiple perspectives without strong endorsement of one, or frames issues as complex problems requiring consensus-based solutions. Avoids overly emotional or ideologically charged rhetoric.
+    
+
+Based on these criteria, determine the degree of centrist bias (e.g., minimal, moderate, strong)
+Construct a brief reason for your answer of no longer than 3 sentences which explains the key concept.
+
+Example:
+Published Jul 07, 2025, 05:36 AM Updated Jul 07, 2025, 05:36 AM MOSCOW - Russian military forces have gained control of two more villages in Ukraine in areas where they have been making advances, one in the eastern Donetsk region and the other in the Kharkiv region in the northeast, according to the Russian Defence Ministry. A ministry statement issued on Sunday said Russian troops had seized Piddubne in the Donetsk region, where Moscow's forces have long been advancing slowly westward. The statement said Russian forces also captured Sobolivka, near the town of Kupiansk in the Kharkiv region, another area that for months has been under Russian attack. A subsequent Russian ministry statement said the \"east\" group of the Russian forces penetrated defences around Piddubne. The village is located southwest of Pokrovsk, one of the focal points of Russian military action in the drive to secure control over all of the Donetsk region. Ukraine's General Staff in its own statement made no mention of either village changing hands. But it reported Russian attacks in other villages near Kupiansk, which according to local officials has been all but destroyed after being occupied by Russian forces in the first weeks after the February 2022 invasion and later recaptured by Ukrainian forces. Sobolivka is located west of the town and the Russia statement, if accurate, would indicate some Russian gains in the area. Reuters could not independently verify battlefield reports from either side. Separately, Interfax news agency said Russian forces hit a Ukrainian air base, a facility for the production of components for long-range drones and ammunition warehouses. And in the northeastern region of Sumy, where Russian forces have carved out a foothold in recent weeks, Russian shelling killed two residents in the village of Bytytsya, just inside the border, the regional governor said. Russia controls nearly 19% of what is internationally recognised to be Ukraine, including the Luhansk region in the east, more than 70% of the Donetsk, Zaporizhzhia and Kherson regions, and fragments of the Kharkiv and Sumy regions. Russia has said Ukraine must abandon four regions - Donetsk, Luhansk, Zaporizhzhia and Kherson - as part of any prospective peace settlement.
+
+Output:
+{"bias": "center", "degree": "strong", "reason": "The article demonstrates a commitment to neutrality by presenting battlefield claims from both the Russian and Ukrainian ministries without taking a side. It further reinforces its objectivity by explicitly stating that Reuters could not independently verify the reports from either party. This approach of presenting multiple perspectives and acknowledging journalistic limitations is the hallmark of a centrist, fact-based reporting style."}
+
+---
+
+Bias: Right
+"Analyze the following news article for a potential right-leaning political bias. Consider if the article:
+
+1. **Values & Positions:** Prioritizes individual liberty, limited government intervention, free-market principles, or traditional values. Advocates for personal responsibility, national sovereignty, or a strong national defense.
+    
+2. **Support & Opposition:** Explicitly or implicitly supports businesses, entrepreneurs, tax cuts, or deregulation. Opposes high taxes, extensive government programs, or perceived threats to national identity/security.
+    
+3. **Viewpoint & Direction:** Suggests societal development through economic growth driven by free markets and individual enterprise. Favors the exploitation of natural resources for energy independence. Promotes an assertive foreign policy focused on national interests.
+    
+4. **Language & Tone:** Uses language that emphasizes individual achievement, fiscal prudence, national pride, or a critical stance towards government overreach. May express skepticism towards international bodies or social programs.
+    
+
+Based on these criteria, determine the degree of right-leaning bias (e.g., minimal, moderate, strong)
+Construct a brief reason for your answer of no longer than 3 sentences which explains the key concept.
+
+Example:
+Los Angeles Mayor Karen Bass canceled an appearance at an event to mark the six-month anniversary of the Palisades Fire to show up at an Immigration and Customs Enforcement (ICE) raid in a\
+n attempt to stop it. Bass had been scheduled to appear with Gov. Gavin Newsom (D), Sen. Alex Padilla (D-CA), and other officials to mark the anniversary of the Palisades and Eaton Fires. \
+But she decided to protest ICE instead. The mayor’s absence was not explained at the event; she was, an official said, attending an “emergent event.” That turned out to be an immigration r\
+aid. Under Bass, Los Angeles has spent more on homeless people than on firefighting. Lately, she has become obsessed with championing the cause of anti-ICE protests, even though they have \
+attacked law enforcement — including the Los Angeles Police Department. Bass has blamed President Donald Trump for riots in the city, and has essentially defending the riots by saying they\
+ will stop when the anti-ICE raids also stop. Bass was out of the country during the Palisades Fire, breaking a promise not to leave the country during her administration and to focus inst\
+ead on local priorities. The Department of Justice recently sued Los Angeles over its “sanctuary city” policy, saying it discriminates against federal law enforcement. As she runs for re-e\
+lection, Bass appears to have made a political calculation that her future depends more on satisfying the far left rather than attending to the needs of local residents. Even Newsom acknow\
+ledged the need for local permitting for rebuilding, which has stalled, to be accelerated.
+
+
+Output:
+{"bias": "right", "degree": "strong", "reason": "The article demonstrates a strong right bias through its consistently negative portrayal of a Democratic mayor, using loaded language like 'obsessed' and accusing her of making a 'political calculation' to satisfy the 'far left.' It prioritizes a law-and-order perspective by criticizing anti-ICE actions and 'sanctuary city' policies while framing the mayor's choices as a neglect of local residents' needs. The piece lacks any alternative viewpoints, presenting a one-sided narrative critical of the official."}
+
+---
+
+You will only return one line of json with the bias direction and degree of agreement with the bias expressed as a degree and a brief reason for your answer.
+
+Ouput format
+{"bias": "[left,center,right]", "degree": "[minimal,moderate,strong]", "reason": "<reason>"}
+
+Attachment:

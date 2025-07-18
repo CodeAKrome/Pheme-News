@@ -1,19 +1,35 @@
-en	iolafrica	https://rss.iol.io/iol/news
-#en	allafrica	https://allafrica.com/tools/headlines/rdf/africa/headlines.rdf
-#	UK	
+# ==> Oceania
+# center right
+en    waustralian-int	https://thewest.com.au/news/world/rss
+en    waustralian-pol	https://thewest.com.au/politics/rss
+# ==> Asia
+# Singapore
+# center
+en	straits-times	https://www.straitstimes.com/news/world/rss.xml
+# Japan	
+en	mainichi	https://mainichi.jp/rss/etc/english_latest.rss	
+# China	
+en	chinamil	http://english.chinamil.com.cn/rss.xml	
+# ==> Africa
+# left
+en	africa-news	https://www.africanews.com/feed/rss
+# center
+en	africa-intel	https://feeds.feedburner.com/AfricaIntelligence
+en	intel-online	https://feeds.feedburner.com/IntelligenceOnline
+#bad en	iolafrica	https://rss.iol.io/iol/news
+#bad en	allafrica	https://allafrica.com/tools/headlines/rdf/africa/headlines.rdf
+# ==> UK	
+# center
 en	bbc-top	http://feeds.bbci.co.uk/news/rss.xml	
 en	bbc-world	http://feeds.bbci.co.uk/news/world/rss.xml	
 en	bbc-pol	http://feeds.bbci.co.uk/news/politics/rss.xml	
 en	bbc-me	http://feeds.bbci.co.uk/news/world/middle_east/rss.xml	
 #	Russia	
 en	tass	https://tass.com/rss/v2.xml	
-#	China	
-en	chinamil	http://english.chinamil.com.cn/rss.xml	
-#	Japan	
-en	mainichi	https://mainichi.jp/rss/etc/english_latest.rss	
-#	Ukraine	
+# Ukraine	
 #en	induk-ukrain	https://www.independent.co.uk/topic/ukraine/rss	
-#	US	
+# ==> US	
+# left
 en	nyt-world	https://rss.nytimes.com/services/xml/rss/nyt/World.xml	
 en	nyt-apac	https://rss.nytimes.com/services/xml/rss/nyt/AsiaPacific.xml	
 en	nyt-eu	https://rss.nytimes.com/services/xml/rss/nyt/Europe.xml	
@@ -28,34 +44,36 @@ en	cnbc-us	https://www.cnbc.com/id/15837362/device/rss/rss.html
 en	cnbc-asia	https://www.cnbc.com/id/19832390/device/rss/rss.html	
 en	cnbc-europe	https://www.cnbc.com/id/19794221/device/rss/rss.html	
 en	cnbc-politics	https://www.cnbc.com/id/10000113/device/rss/rss.html	
+# right
+en	breitbart	https://feeds.feedburner.com/breitbart
 en	wsj-world	https://feeds.a.dj.com/rss/RSSWorldNews.xml	
 en	fox-latest	https://moxie.foxnews.com/google-publisher/latest.xml	
 en	fox-world	https://moxie.foxnews.com/google-publisher/world.xml	
 en	fox-politics	https://moxie.foxnews.com/google-publisher/politics.xml	
 en	fox-us	https://moxie.foxnews.com/google-publisher/us.xml	
-#	Spain	
+# ==> Spain	
 en	el-pais	http://ep01.epimg.net/rss/elpais/inenglish.xml	
-#	France	
+# ==> France	
 #en	fr-24	https://www.france24.com/en/rss	
-en	lemonde	https://www.lemonde.fr/en/rss/une.xml	
-#	Egypt	
+#bad en	lemonde	https://www.lemonde.fr/en/rss/une.xml	
+# ==> Egypt	
 en	egyptian-streets	https://egyptianstreets.com/feed/	
 en	egyptian-independant	https://www.egyptindependent.com/feed/	
-#	Iran	
+# ==> Iran	
 en	mehr-news	https://en.mehrnews.com/rss	
 en	tasnim-news	https://www.tasnimnews.com/en/rss/feed/0/7/0/all-stories	
-#	Canada	
+# ==> Canada	
 en	cbc-top	https://www.cbc.ca/webfeed/rss/rss-topstories	
 en	cbc-world	https://www.cbc.ca/webfeed/rss/rss-world	
 en	cbc-politics	https://www.cbc.ca/webfeed/rss/rss-politics	
-#	Germany	
+# ==> Germany	
 #de	zeit-online	https://newsfeed.zeit.de/index	
 #	https://corporate.dw.com/en/rss-feeds/a-68693346	
 #	DWelle	
 en	dw	https://rss.dw.com/rdf/rss-en-all	
 en	dw-world	https://rss.dw.com/rdf/rss-en-world	
 en	dw-eu	https://rss.dw.com/rdf/rss-en-eu	
-#	Israel	
+# ==> Israel	
 en	jpost	https://rss.jpost.com/rss/rssfeedsfrontpage.aspx	
 en	jpost-polus	https://rss.jpost.com/rss/rssfeedsamerican-politics	
 en	jpost-arabis	https://rss.jpost.com/rss/rssfeedsarabisraeliconflict.aspx	

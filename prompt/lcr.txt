@@ -1,0 +1,67 @@
+ROLE:
+You are an expert political analyst.
+
+GOAL:
+Determine the amount of left center or right bias there is in the attached news article and provide a very brief reason why less than 3 sentences.
+
+Analyze the following news article for a potential political bias. 
+The characteristics of left center and right bias follow:
+
+Bias: left
+"Analyze the following news article for a potential leftist political bias. Consider if the article:
+
+1. **Values & Positions:** Prioritizes social equality, collective welfare, environmental protection, or the rights of marginalized groups. Advocates for government intervention to address societal problems (e.g., healthcare, education, poverty).
+    
+2. **Support & Opposition:** Explicitly or implicitly supports labor unions, social safety nets, or policies aimed at wealth redistribution. Opposes corporate power, income inequality, or discriminatory practices.
+    
+3. **Viewpoint & Direction:** Suggests societal development towards greater inclusivity and sustainability. Emphasizes the preservation of natural resources or the transition to renewable energy. Promotes international cooperation or humanitarian aid.
+    
+4. **Language & Tone:** Uses language that evokes empathy for disadvantaged groups, criticizes systemic injustices, or frames issues through a lens of social progress.
+    
+
+Based on these criteria, determine the degree of left-leaning bias (e.g., minimal, moderate, strong)
+Construct a brief reason for your answer of no longer than 3 sentences which explains the key concept.
+
+---
+
+Bias: Center
+"Analyze the following news article for a potential centrist political bias. Consider if the article:
+
+1. **Values & Positions:** Emphasizes pragmatism, compromise, gradual change, or a balance between individual liberty and social responsibility. Supports a strong middle class, established institutions, or bipartisan solutions.
+    
+2. **Support & Opposition:** Advocates for targeted social programs, market-based solutions with moderate regulation, or fiscal responsibility. Opposes extreme viewpoints from either the left or the right, or radical societal upheaval.
+    
+3. **Viewpoint & Direction:** Suggests societal progress through innovation and stable economic growth. Seeks a balance between resource exploitation and preservation, potentially favoring diverse energy sources. Promotes multilateralism and pragmatic foreign policy.
+    
+4. **Language & Tone:** Uses neutral or objective language, presents multiple perspectives without strong endorsement of one, or frames issues as complex problems requiring consensus-based solutions. Avoids overly emotional or ideologically charged rhetoric.
+    
+
+Based on these criteria, determine the degree of centrist bias (e.g., minimal, moderate, strong)
+Construct a brief reason for your answer of no longer than 3 sentences which explains the key concept.
+
+---
+
+Bias: Right
+"Analyze the following news article for a potential right-leaning political bias. Consider if the article:
+
+1. **Values & Positions:** Prioritizes individual liberty, limited government intervention, free-market principles, or traditional values. Advocates for personal responsibility, national sovereignty, or a strong national defense.
+    
+2. **Support & Opposition:** Explicitly or implicitly supports businesses, entrepreneurs, tax cuts, or deregulation. Opposes high taxes, extensive government programs, or perceived threats to national identity/security.
+    
+3. **Viewpoint & Direction:** Suggests societal development through economic growth driven by free markets and individual enterprise. Favors the exploitation of natural resources for energy independence. Promotes an assertive foreign policy focused on national interests.
+    
+4. **Language & Tone:** Uses language that emphasizes individual achievement, fiscal prudence, national pride, or a critical stance towards government overreach. May express skepticism towards international bodies or social programs.
+    
+
+Based on these criteria, determine the degree of right-leaning bias (e.g., minimal, moderate, strong)
+Construct a brief reason for your answer of no longer than 3 sentences which explains the key concept.
+
+---
+
+You will only return one line of json with the bias direction and degree of agreement with the bias expressed as a degree and a reason for your answer.
+
+Ouput format:
+{"bias": "[left,center,right]", "degree": "[minimal,moderate,strong]", "reason": "<reason>"}
+
+Attachment:
+Published Jul 07, 2025, 05:36 AM Updated Jul 07, 2025, 05:36 AM MOSCOW - Russian military forces have gained control of two more villages in Ukraine in areas where they have been making advances, one in the eastern Donetsk region and the other in the Kharkiv region in the northeast, according to the Russian Defence Ministry. A ministry statement issued on Sunday said Russian troops had seized Piddubne in the Donetsk region, where Moscow's forces have long been advancing slowly westward. The statement said Russian forces also captured Sobolivka, near the town of Kupiansk in the Kharkiv region, another area that for months has been under Russian attack. A subsequent Russian ministry statement said the \"east\" group of the Russian forces penetrated defences around Piddubne. The village is located southwest of Pokrovsk, one of the focal points of Russian military action in the drive to secure control over all of the Donetsk region. Ukraine's General Staff in its own statement made no mention of either village changing hands. But it reported Russian attacks in other villages near Kupiansk, which according to local officials has been all but destroyed after being occupied by Russian forces in the first weeks after the February 2022 invasion and later recaptured by Ukrainian forces. Sobolivka is located west of the town and the Russia statement, if accurate, would indicate some Russian gains in the area. Reuters could not independently verify battlefield reports from either side. Separately, Interfax news agency said Russian forces hit a Ukrainian air base, a facility for the production of components for long-range drones and ammunition warehouses. And in the northeastern region of Sumy, where Russian forces have carved out a foothold in recent weeks, Russian shelling killed two residents in the village of Bytytsya, just inside the border, the regional governor said. Russia controls nearly 19% of what is internationally recognised to be Ukraine, including the Luhansk region in the east, more than 70% of the Donetsk, Zaporizhzhia and Kherson regions, and fragments of the Kharkiv and Sumy regions. Russia has said Ukraine must abandon four regions - Donetsk, Luhansk, Zaporizhzhia and Kherson - as part of any prospective peace settlement.

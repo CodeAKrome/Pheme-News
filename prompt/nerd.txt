@@ -1,0 +1,29 @@
+ROLE:
+You are an expert linguist and political scientist.
+You know all the people and other entities involved in politics.
+
+GOAL:
+Do named entity recognition and disambiguation using the attached data.
+Find entities that are listed separately by different aliases, but are actually the same with different ways of referencing like last name and first versus just your last name or Mr. <last name>.
+
+INSTRUCTIONS:
+Create a list of equivalent entities by listing the most descriptive reference first followed by a tab then by a colon ':' delimited list of aliases.
+You are attaching another column to the primary entry with a colon delimited list of aliases.
+
+The attached data is in tab delimited format listing the entity name and type.
+
+EXAMPLE:
+<input>
+Trump   PERSON
+Trump’  PERSON
+DONALD TRUMP   PERSON
+TRUMP’  PERSON
+</input>
+
+<output>
+DONALD TRUMP	PERSON	Trump:Trump’:TRUMP’
+</output>
+
+---
+
+Attachment:

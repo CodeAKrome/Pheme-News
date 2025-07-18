@@ -1,3 +1,22 @@
+# Show bias counts by source
+strongbias() {
+    jq -r 'select(.bias.degree == "strong") | {source: .source, bias: .bias.bias} |  join("\t")' $1 | sort | uniq -c
+}
+
+# print bias for comparison of LLMs
+showbias() {
+    cat $1 | egrep '^\{' | jq -r '[.source, .id, .bias.bias, .bias.degree, .title]|join("\t")'
+}
+
+checkbias() {
+    cat $1 | egrep '^\{' | jq '[.id, .bias.bias, .bias.degree, .title, .text]'
+}
+
+# sorted count of $1 jq .sources
+sources() {
+    jq .source $1 | sort | uniq -c | sort -rn
+}
+
 # Slice by entity list
 #Eric Trump	PERSON	3	27680
 # entities to filter

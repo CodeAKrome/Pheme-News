@@ -21,7 +21,7 @@ tsv2html:
 	cat tmp/0528links.tsv | python src/tsv_idtitlelink2html.py > tmp/0528links.html
 html2pdf:
 	chrome --headless --disable-gpu --print-to-pdf="tmp/0527idtitlelink.pdf" "file:///Users/kyle/hub/Pheme-News/tmp/0527idtitlelink.html"
-ollamatest:
+ollamacheck:
 	python src/lib/ollamaai.py 'llama3.1:8b' 3000 prompt="Capital of Spain"
 gpechinavietnam:
 	jq -n '[inputs | . as $root | .ner[].spans[] | select(.value? == "GPE" and (.text? | IN("China", "Vietnam") | . == true)) | {text: .text, value: .value, source: $root.source, id: $root.id}]' cache/dedupe.jsonl
