@@ -11,3 +11,4 @@ NewsSentiment
 # This must go after flair
 google-generativeai
 # Then run INSTALL.sh for TTS
+pymongo

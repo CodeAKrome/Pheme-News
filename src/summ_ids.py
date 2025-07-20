@@ -50,6 +50,9 @@ for line in sys.stdin:
     print(line, end="")
 
     if trig == 1:
+        
+        # sys.stderr.write(f"trig: {line.strip()}\n")
+        
         cmd.append(
             f"cat {infile} | jq 'select(.id | IN({line.strip()}))' | jq '[.text]' | src/gemtest.py {model} {promptfile}"
         )
@@ -59,7 +62,9 @@ for line in sys.stdin:
         # print(f"Trigger: {trig} cmd: {cmd}")
 
         if trig == -1:
-            # print("")
+
+            # sys.stderr.write(f"cmd: {cmd[0]}\n")
+
             summary = runcmd(cmd[0])
             soundfile = f"{sumcnt:02d}-{soundid}"
             print(f"[mp3 summary]({soundfile}.mp3)")

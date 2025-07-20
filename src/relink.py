@@ -26,14 +26,24 @@ with open(id2link, "r") as f:
         try:
             id, link, src, bval, bias, bbias, bdeg = line.split("\t")
         except ValueError:
-            sys.stderr.write(f"bad retry 5: {line}\n")
+            sys.stderr.write(f"retry 5: {line}\n")
 
             try:
                 id, link, src, bval, bias = line.split("\t")
                 bbias = "NA"
                 bdeg = "NA"
             except ValueError:
-                sys.stderr.write(f"Retry 5 failed: {line}\n")
+                sys.stderr.write(f"retry 3: {line}\n")
+
+                try:
+                    id, link, src = line.split("\t")
+                    bval = "NA"
+                    bias = "NA"
+                    bbias = "NA"
+                    bdeg = "NA"
+                except ValueError:                
+                    sys.stderr.write(f"Retry 3 failed, dropping: {line}\n")
+                    continue
 
         id = int(id)
         link = link.strip()

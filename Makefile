@@ -40,9 +40,9 @@ run6init:
 	@cat cache/flair_news.jsonl | python src/dedupe_init.py
 run6:
 	@cat cache/flair_news.jsonl | python src/dedupe.py > cache/dedupe_deduped.jsonl 
-# Restrict stories to those in last 2 days
+# Restrict stories to those in last 3 is a magik number days.
 recent:
-	@cat `find cache -type f -name 'dedupe_*.jsonl' -newermt '2 day ago'` | egrep '^\{' | src/date_filter.py '-2 day' > cache/dedupe.jsonl
+	@cat `find cache -type f -name 'dedupe_*.jsonl' -newermt '3 day ago'` | egrep '^\{' | src/date_filter.py '-3 day' > cache/dedupe.jsonl
 bias:
 	@cat cache/dedupe_deduped.jsonl | src/litellm_ai.py prompt/lcr_reason_exam4k.txt > cache/dedupe_bias.jsonl
 	@cp cache/dedupe_bias.jsonl cache/dedupe_`date +%m-%d_%H:%M`.jsonl
@@ -50,6 +50,7 @@ vectorize:
 	@cat cache/dedupe.jsonl| python src/vectorize.py
 sentiment:
 	@cat cache/dedupe.jsonl | python src/sentiment.py > cache/dedupe_sentiment.cypherl
+# Make list of entities for slice.sh
 entitydict:
 	@cat cache/dedupe.jsonl | python src/jsonl2entitydict.py > cache/dedupe_entity_dictionary.tsv
 idtitlesumm:
@@ -75,7 +76,7 @@ top10slice:
 	@./dedupe_top10_ids.sh
 #	@cut -f 4 tmp/dedupe_top10.tsv | perl -ne 's/\n/,/g;print;' > tmp/dedupe_top10_ids_comma.txt
 #	@cat tmp/dedupe_top10_ids_comma.txt | sed 's/\,$//' > tmp/dedupe_top10_ids.txt
-	@cd cache; ./slice.sh top10 `cat ../tmp/dedupe_top10_ids.txt`
+	@cache/slice.sh top10 cache/dedupe.jsonl `cat tmp/dedupe_top10_ids.txt`
 	@cut -f 1,2 tmp/dedupe_top10.tsv > tmp/top10_filtent.tsv
 	@cat prompt/gemtest.txt tmp/top10_filtent.tsv prompt/attachment.txt tmp/top10_idtitle.tsv > tmp/top10_initial_prompt.txt
 	@cp tmp/top10_initial_prompt.txt tmp/prompt.txt
@@ -95,7 +96,10 @@ llm:
 	@cat tmp/top10_lnk.md | src/gatherids.pl > tmp/top10.md
 #	@cat tmp/prompt.txt | src/gemtest.py 'models/gemini-2.5-flash' | src/filter_markdown.py | src/relink.py tmp/dedupe_idlinksrcbvalbias.tsv top10 | src/gatherids.pl > tmp/top10.md
 	@rm mp3/*.mp3; rm mp3/*.txt; rm mp3/*.jsonl; rm mp3/*.md
-	@cat tmp/top10.md | src/summ_ids.py `cat tmp/maxgood_llm.txt` cache/dedupe.jsonl prompt/summary.txt top10 > mp3/Top10.md 2> mp3/Sound.jsonl
+
+#	@cat tmp/top10.md | src/summ_ids.py `cat tmp/maxgood_llm.txt` cache/dedupe.jsonl prompt/summary.txt top10 > mp3/Top10.md 2> mp3/Sound.jsonl
+	@cat tmp/top10.md | src/summ_ids.py gemini-2.5-pro cache/dedupe.jsonl prompt/summary.txt top10 > mp3/Top10.md 2> mp3/Sound.jsonl
+
 	@cd mp3; cat Sound.jsonl | ../src/jsonl2mp3.py
 # don't filter the markdown for sparse topics with < 3 articles
 testllm:
