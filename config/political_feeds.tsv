@@ -1,7 +1,12 @@
+# ==> Syria
+en    syrian-obs	https://syrianobserver.com/feed
+en    syriadirect	https://syriadirect.org/feed/
+# ==> Saudi Arabia
+en    saudi-gaz	https://saudigazette.com.sa/rssFeed/74
 # ==> Oceania
 # center right
-en    waustralian-int	https://thewest.com.au/news/world/rss
-en    waustralian-pol	https://thewest.com.au/politics/rss
+en	 waustralian-int	https://thewest.com.au/news/world/rss
+en	 waustralian-pol	https://thewest.com.au/politics/rss
 # ==> Asia
 # Singapore
 # center
@@ -15,7 +20,7 @@ en	chinamil	http://english.chinamil.com.cn/rss.xml
 en	africa-news	https://www.africanews.com/feed/rss
 # center
 en	africa-intel	https://feeds.feedburner.com/AfricaIntelligence
-en	intel-online	https://feeds.feedburner.com/IntelligenceOnline
+#403 en	intel-online	https://feeds.feedburner.com/IntelligenceOnline
 #bad en	iolafrica	https://rss.iol.io/iol/news
 #bad en	allafrica	https://allafrica.com/tools/headlines/rdf/africa/headlines.rdf
 # ==> UK	
@@ -29,11 +34,15 @@ en	tass	https://tass.com/rss/v2.xml
 # Ukraine	
 #en	induk-ukrain	https://www.independent.co.uk/topic/ukraine/rss	
 # ==> US	
+en    abc-top	https://abcnews.go.com/abcnews/topstories
+en    abc-int	https://abcnews.go.com/abcnews/internationalheadlines
+en    abc-us	https://abcnews.go.com/abcnews/usheadlines
+en    abc-pol	https://abcnews.go.com/abcnews/politicsheadlines
 # left
-en	nyt-world	https://rss.nytimes.com/services/xml/rss/nyt/World.xml	
-en	nyt-apac	https://rss.nytimes.com/services/xml/rss/nyt/AsiaPacific.xml	
-en	nyt-eu	https://rss.nytimes.com/services/xml/rss/nyt/Europe.xml	
-en	nyt-me	https://rss.nytimes.com/services/xml/rss/nyt/MiddleEast.xml	
+#403 en	nyt-world	https://rss.nytimes.com/services/xml/rss/nyt/World.xml	
+#403 en	nyt-apac	https://rss.nytimes.com/services/xml/rss/nyt/AsiaPacific.xml	
+#403 en	nyt-eu	https://rss.nytimes.com/services/xml/rss/nyt/Europe.xml	
+#403 en	nyt-me	https://rss.nytimes.com/services/xml/rss/nyt/MiddleEast.xml	
 en	cnn	http://rss.cnn.com/rss/edition.rss	
 en	cnn-world	http://rss.cnn.com/rss/edition_world.rss	
 en	cnn-me	http://rss.cnn.com/rss/edition_meast.rss	
@@ -46,26 +55,27 @@ en	cnbc-europe	https://www.cnbc.com/id/19794221/device/rss/rss.html
 en	cnbc-politics	https://www.cnbc.com/id/10000113/device/rss/rss.html	
 # right
 en	breitbart	https://feeds.feedburner.com/breitbart
-en	wsj-world	https://feeds.a.dj.com/rss/RSSWorldNews.xml	
+#401 en	wsj-world	https://feeds.a.dj.com/rss/RSSWorldNews.xml	
 en	fox-latest	https://moxie.foxnews.com/google-publisher/latest.xml	
 en	fox-world	https://moxie.foxnews.com/google-publisher/world.xml	
 en	fox-politics	https://moxie.foxnews.com/google-publisher/politics.xml	
 en	fox-us	https://moxie.foxnews.com/google-publisher/us.xml	
 # ==> Spain	
-en	el-pais	http://ep01.epimg.net/rss/elpais/inenglish.xml	
+#signup en	el-pais	http://ep01.epimg.net/rss/elpais/inenglish.xml	
 # ==> France	
 #en	fr-24	https://www.france24.com/en/rss	
 #bad en	lemonde	https://www.lemonde.fr/en/rss/une.xml	
-# ==> Egypt	
+# ==> Egypt
+en    dn-egypt	https://www.dailynewsegypt.com/feed/
 en	egyptian-streets	https://egyptianstreets.com/feed/	
 en	egyptian-independant	https://www.egyptindependent.com/feed/	
 # ==> Iran	
 en	mehr-news	https://en.mehrnews.com/rss	
 en	tasnim-news	https://www.tasnimnews.com/en/rss/feed/0/7/0/all-stories	
 # ==> Canada	
-en	cbc-top	https://www.cbc.ca/webfeed/rss/rss-topstories	
-en	cbc-world	https://www.cbc.ca/webfeed/rss/rss-world	
-en	cbc-politics	https://www.cbc.ca/webfeed/rss/rss-politics	
+#time en	cbc-top	https://www.cbc.ca/webfeed/rss/rss-topstories	
+#time en	cbc-world	https://www.cbc.ca/webfeed/rss/rss-world	
+#time en	cbc-politics	https://www.cbc.ca/webfeed/rss/rss-politics	
 # ==> Germany	
 #de	zeit-online	https://newsfeed.zeit.de/index	
 #	https://corporate.dw.com/en/rss-feeds/a-68693346	
@@ -74,19 +84,19 @@ en	dw	https://rss.dw.com/rdf/rss-en-all
 en	dw-world	https://rss.dw.com/rdf/rss-en-world	
 en	dw-eu	https://rss.dw.com/rdf/rss-en-eu	
 # ==> Israel	
-en	jpost	https://rss.jpost.com/rss/rssfeedsfrontpage.aspx	
-en	jpost-polus	https://rss.jpost.com/rss/rssfeedsamerican-politics	
-en	jpost-arabis	https://rss.jpost.com/rss/rssfeedsarabisraeliconflict.aspx	
-en	jpost-gaza	https://rss.jpost.com/rss/rssfeedsgaza.aspx	
-en	jpost-break	https://rss.jpost.com/rss/rssfeedsheadlines.aspx	
-en	jpost-all	https://rss.jpost.com/rss/rssallnews	
-en	jpost-world	https://rss.jpost.com/rss/rssfeedsinternational	
-en	jpost-ishamas	https://rss.jpost.com/rss/israel-hamas-war	
-en	jpost-israel	https://rss.jpost.com/rss/rssfeedsisraelnews.aspx	
-en	jpost-ispol	https://rss.jpost.com/rss/rssfeedspoliticsdiplomacy.aspx	
-en	jpost-me	https://rss.jpost.com/rss/rssfeedsmiddleeastnews.aspx	
-en	jpost-iran	https://rss.jpost.com/rss/rssfeedsiran	
-en	jpost-isis	https://rss.jpost.com/rss/rssfeedsisisthreat	
-en	jpost-ukrrus	https://rss.jpost.com/rss/rssukrainerussiawar	
-en	jpost-uselec	https://rss.jpost.com/rss/rssuselections	
+#en	jpost	https://rss.jpost.com/rss/rssfeedsfrontpage.aspx	
+#en	jpost-polus	https://rss.jpost.com/rss/rssfeedsamerican-politics	
+#en	jpost-arabis	https://rss.jpost.com/rss/rssfeedsarabisraeliconflict.aspx	
+#en	jpost-gaza	https://rss.jpost.com/rss/rssfeedsgaza.aspx	
+#en	jpost-break	https://rss.jpost.com/rss/rssfeedsheadlines.aspx	
+#en	jpost-all	https://rss.jpost.com/rss/rssallnews	
+#en	jpost-world	https://rss.jpost.com/rss/rssfeedsinternational	
+#en	jpost-ishamas	https://rss.jpost.com/rss/israel-hamas-war	
+#en	jpost-israel	https://rss.jpost.com/rss/rssfeedsisraelnews.aspx	
+#en	jpost-ispol	https://rss.jpost.com/rss/rssfeedspoliticsdiplomacy.aspx	
+#en	jpost-me	https://rss.jpost.com/rss/rssfeedsmiddleeastnews.aspx	
+#en	jpost-iran	https://rss.jpost.com/rss/rssfeedsiran	
+#en	jpost-isis	https://rss.jpost.com/rss/rssfeedsisisthreat	
+#en	jpost-ukrrus	https://rss.jpost.com/rss/rssukrainerussiawar	
+#en	jpost-uselec	https://rss.jpost.com/rss/rssuselections	
 en	arutz-sheva	https://www.israelnationalnews.com/Rss.aspx?act=.1	

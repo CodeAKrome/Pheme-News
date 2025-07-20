@@ -11,6 +11,35 @@ This script fetches HTML content from a specified URL and applies a BeautifulSou
 It prints the number of elements found and their content.
 """
 
+def jpost(url, find_all_string):
+    try:
+        # Fetch the HTML content
+        print(f"Fetching HTML from: {url}")
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()  # Raise an exception for bad status codes
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        # 1. Find the main article container
+        article_body = soup.find('section', itemprop='articleBody')
+
+        if not article_body:
+            print("No article body found.")
+            return
+        print(f"Found article body: {article_body}")
+
+        # 2. Find all <p> and <h3> tags within the container
+        text_elements = article_body.find_all(['p'])
+
+        # 3. Extract and print the text from each element
+        for element in text_elements:
+            # use .get_text() to extract text from child tags (like <a>)
+            # and strip=True to remove leading/trailing whitespace
+            print(element.get_text(strip=True))
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching URL: {e}")
+    except Exception as e:
+        print(f"Error parsing HTML: {e}")
+
 
 def fetch_and_parse(url, find_all_string):
     """
@@ -57,7 +86,8 @@ def main():
         url = input("Enter URL: ")
         find_all_string = input("Enter find_all string (e.g., 'a', 'div', 'p'): ")
 
-    fetch_and_parse(url, find_all_string)
+    # fetch_and_parse(url, find_all_string)
+    jpost(url, find_all_string)
 
 
 if __name__ == "__main__":

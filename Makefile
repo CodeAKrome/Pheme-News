@@ -1,6 +1,7 @@
 include tools.mk
 tidy:
 	black src/*.py
+	black src/lib/*.py
 clean: clearcache
 runpipe: tbeg pipe tend
 pipe:	
@@ -25,7 +26,7 @@ clearcache:
 	rm cache/articles.json
 	rm cache/counter.json
 run1:
-	@cat config/political_feeds.tsv | python src/read_rss.py > cache/read_rss.jsonl
+	@cat config/political_feeds.tsv | grep -v \# | python src/read_rss.py > cache/read_rss.jsonl
 testrun1:
 	@cat config/test_feeds.tsv | python src/read_rss.py > cache/read_rss.jsonl
 run2:

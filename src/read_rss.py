@@ -168,6 +168,8 @@ class ReadRss(BaseException):
     def read(self):
         for i, line in enumerate(sys.stdin, start=1):
             line = line.strip()
+            if not line:
+                continue
             # Allow for comments if # is first character
             if line[0] == "#" or line.strip() == "":
                 continue
