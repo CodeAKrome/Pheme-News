@@ -50,9 +50,9 @@ for line in sys.stdin:
     print(line, end="")
 
     if trig == 1:
-        
+
         # sys.stderr.write(f"trig: {line.strip()}\n")
-        
+
         cmd.append(
             f"cat {infile} | jq 'select(.id | IN({line.strip()}))' | jq '[.text]' | src/gemtest.py {model} {promptfile}"
         )

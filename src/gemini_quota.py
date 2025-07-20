@@ -11,8 +11,8 @@ import os
 
 genai.configure(api_key=os.getenv("GEMINI_API_KEY", "YOUR_API_KEY_HERE"))
 API_KEY = os.getenv("GEMINI_API_KEY", "YOUR_API_KEY_HERE")
-MODEL   = "gemini-2.5-pro"            # or gemini-2.5-pro-preview-06-05
-MODEL   = "gemini-2.5-flash"            # or gemini-2.5-pro-preview-06-05
+MODEL = "gemini-2.5-pro"  # or gemini-2.5-pro-preview-06-05
+MODEL = "gemini-2.5-flash"  # or gemini-2.5-pro-preview-06-05
 
 # ------------------------------------------------------------------
 # 1.  Authenticate

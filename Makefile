@@ -29,7 +29,7 @@ run1:
 testrun1:
 	@cat config/test_feeds.tsv | python src/read_rss.py > cache/read_rss.jsonl
 run2:
-	@cat cache/read_rss.jsonl | python src/dedupe_titles.py | python src/tallyman.py > cache/tallyman.jsonl
+	@cat cache/read_rss.jsonl | src/dedupe_titles.py | python src/tallyman.py > cache/tallyman.jsonl
 run3:
 	@cat cache/tallyman.jsonl | python src/read_article.py > cache/read_article.jsonl
 run4:
@@ -42,7 +42,7 @@ run6:
 	@cat cache/flair_news.jsonl | python src/dedupe.py > cache/dedupe_deduped.jsonl 
 # Restrict stories to those in last 3 is a magik number days.
 recent:
-	@cat `find cache -type f -name 'dedupe_*.jsonl' -newermt '3 day ago'` | egrep '^\{' | src/date_filter.py '-3 day' > cache/dedupe.jsonl
+	@cat `find cache -type f -name 'dedupe_*.jsonl' -newermt '3 day ago'` | egrep '^\{' | src/dedupe_titles.py | src/date_filter.py '-3 day' > cache/dedupe.jsonl
 bias:
 	@cat cache/dedupe_deduped.jsonl | src/litellm_ai.py prompt/lcr_reason_exam4k.txt > cache/dedupe_bias.jsonl
 	@cp cache/dedupe_bias.jsonl cache/dedupe_`date +%m-%d_%H:%M`.jsonl

@@ -41,7 +41,7 @@ with open(id2link, "r") as f:
                     bias = "NA"
                     bbias = "NA"
                     bdeg = "NA"
-                except ValueError:                
+                except ValueError:
                     sys.stderr.write(f"Retry 3 failed, dropping: {line}\n")
                     continue
 

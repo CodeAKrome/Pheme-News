@@ -22,6 +22,7 @@ Usage
 import json
 import sys
 
+
 def main() -> None:
     dropped = 0
     records = []
@@ -56,7 +57,10 @@ def main() -> None:
     for rec in records:
         print(json.dumps(rec, ensure_ascii=False))
 
-    sys.stderr.write(f"Dropped {dropped} records with invalid 'published_parsed' field.\n")
+    sys.stderr.write(
+        f"Dropped {dropped} records with invalid 'published_parsed' field.\n"
+    )
+
 
 if __name__ == "__main__":
     main()

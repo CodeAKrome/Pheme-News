@@ -10,11 +10,12 @@ import json
 import sys
 from typing import TextIO
 
+
 def add_ids(infile: TextIO, outfile: TextIO, start_id: int) -> None:
     next_id = start_id
     for line in infile:
         line = line.rstrip("\n")
-        if not line:           # skip empty lines
+        if not line:  # skip empty lines
             continue
         try:
             obj = json.loads(line)
@@ -28,6 +29,7 @@ def add_ids(infile: TextIO, outfile: TextIO, start_id: int) -> None:
         json.dump(obj, outfile, ensure_ascii=False)
         outfile.write("\n")
 
+
 def main(argv: list[str]) -> None:
     if len(argv) != 2:
         print(f"Usage: {argv[0]} <STARTING_ID>", file=sys.stderr)
@@ -40,6 +42,7 @@ def main(argv: list[str]) -> None:
         sys.exit(1)
 
     add_ids(sys.stdin, sys.stdout, start_id)
+
 
 if __name__ == "__main__":
     main(sys.argv)
